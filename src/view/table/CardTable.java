@@ -1,8 +1,7 @@
-package view;
+package view.table;
 
 import constant.CommonConstant;
 import model.Card;
-import model.Product;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -22,37 +21,55 @@ public class CardTable extends JPanel {
             CommonConstant.CARD_EXPIRATION_DATE_HEADER,
             CommonConstant.CARD_OWNER_NAME_HEADER
     };
+
     private static final DateFormat EXPIRATION_DATE_FORMAT = new SimpleDateFormat("MM/yy");
+    private static final int SECURITY_CODE_COLUMN_INDEX = 3;
+    private static final int PREFERRED_SECURITY_COLUMN_WIDTH = 125;
 
     private final DefaultTableModel tableModel;
 
     public CardTable() {
-        this.tableModel = new DefaultTableModel(COLUMNS, 0);
+        this.tableModel = new DefaultTableModel(COLUMNS, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
 
-        JTable table = new JTable(tableModel);
+        this.initComponents();
+    }
+
+    private void initComponents() {
+        JTable table = new JTable(this.tableModel);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        table.setRowHeight(27);
-        TableColumn actionColumn = table.getColumnModel().getColumn(3);
-        actionColumn.setPreferredWidth(125);
+        table.setRowHeight(CommonConstant.ROW_HEIGHT);
+
+        TableColumn securityColumn = table.getColumnModel().getColumn(SECURITY_CODE_COLUMN_INDEX);
+        securityColumn.setPreferredWidth(PREFERRED_SECURITY_COLUMN_WIDTH);
 
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setPreferredSize(new Dimension(800, 200));
+
         this.setLayout(new BorderLayout());
         this.add(scrollPane, BorderLayout.CENTER);
     }
 
     public void appendCard(Card card) {
-        tableModel.addRow(new Object[]{
-            card.getBrand().name(),
-            card.getType().name(),
-            card.getCardNumber(),
-            card.getSecurityCode(),
-            EXPIRATION_DATE_FORMAT.format(card.getExpirationDate()),
-            card.getOwnerName()
+        if (card == null) return;
+
+        this.tableModel.addRow(new Object[]{
+                card.getBrand().name(),
+                card.getType().getPrettyName(),
+                card.getCardNumber(),
+                card.getSecurityCode(),
+                EXPIRATION_DATE_FORMAT.format(card.getExpirationDate()),
+                card.getOwnerName()
         });
     }
 
     public void appendCards(List<Card> cards) {
-        cards.forEach(this::appendCard);
+        if (cards != null) {
+            cards.forEach(this::appendCard);
+        }
     }
 }

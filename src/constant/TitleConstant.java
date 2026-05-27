@@ -9,5 +9,7 @@ public class TitleConstant {
     public static final String PRODUCT_CARDS_FORM = "Tarjetas del producto";
     public static final String ADD_BALANCE_FORM = "Agrega dinero a la cuenta";
     public static final String TRANSFER_FORM = "Transferir dinero entre cuentas";
+    public static final String PAY_FORM = "Pagar con tarjetas";
+    public static final String TRANSACTION_OVERVIEW = "Historial de Transacciones";
 
 }

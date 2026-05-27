@@ -11,9 +11,12 @@ public class SubMenuProductRenderer implements TableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         if (value instanceof Product product && product.getId() != null) {
-            SubMenuProductTable renderPanel = new SubMenuProductTable(product, null);
-            renderPanel.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
-            return renderPanel;
+            SubMenuProductTable buttonPanel = new SubMenuProductTable(product, null);
+            JPanel container = new JPanel(new GridBagLayout());
+            container.setOpaque(true);
+            container.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+            container.add(buttonPanel);
+            return container;
         }
         return new JLabel();
     }

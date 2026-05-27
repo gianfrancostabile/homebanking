@@ -8,6 +8,7 @@ import java.awt.*;
 import java.util.function.Consumer;
 
 public class SubMenuClientEditor extends AbstractCellEditor implements TableCellEditor {
+
     private SubMenuClientTable editPanel;
     private final Consumer<Client> onUpdate;
     private final Consumer<String> onDelete;
@@ -21,23 +22,29 @@ public class SubMenuClientEditor extends AbstractCellEditor implements TableCell
     public Component getTableCellEditorComponent(JTable table, Object value,
                                                  boolean isSelected, int row, int column) {
         if (value instanceof Client client) {
-            editPanel = new SubMenuClientTable(client,
+            this.editPanel = new SubMenuClientTable(client,
                     updatedClient -> {
-                        stopCellEditing();
-                        onUpdate.accept(updatedClient);
+                        this.stopCellEditing();
+                        this.onUpdate.accept(updatedClient);
                     },
                     clientId -> {
-                        stopCellEditing();
-                        onDelete.accept(clientId);
+                        this.stopCellEditing();
+                        this.onDelete.accept(clientId);
                     });
-            editPanel.setBackground(table.getSelectionBackground());
-            return editPanel;
+
+            JPanel container = new JPanel(new GridBagLayout());
+            container.setOpaque(true);
+            container.setBackground(table.getSelectionBackground());
+            container.add(this.editPanel);
+
+            return container;
         }
+
         return new JLabel();
     }
 
     @Override
     public Object getCellEditorValue() {
-        return editPanel != null ? editPanel.getClient() : null;
+        return this.editPanel != null ? this.editPanel.getClient() : null;
     }
 }

@@ -1,33 +1,47 @@
 package view.submenu;
 
-import constant.ButtonConstant;
-import model.Card;
+import constant.ButtonVariant;
 import model.Product;
-import view.*;
+import view.custom.CustomButton;
+import view.form.AddBalanceForm;
+import view.overview.CardsOverview;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class SubMenuProductTable extends JPanel {
+
     private final Product product;
 
     public SubMenuProductTable(Product product, Consumer<Product> onSuccess) {
         this.product = product;
-        setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
+        this.initComponents(onSuccess);
+    }
 
-        JButton simulateButton = new JButton(ButtonConstant.SIMULATE_BUTTON);
-        simulateButton.addActionListener((event) -> new CardsOverview(product.getCards()));
+    private void initComponents(Consumer<Product> onSuccess) {
+        this.setLayout(new FlowLayout(FlowLayout.CENTER, 6, 0));
+        this.setOpaque(false);
 
-        JButton addBalanceButton = new JButton(ButtonConstant.ADD_ITEM);
-        addBalanceButton.addActionListener((event) -> new AddBalanceForm(product, onSuccess));
+        CustomButton addBalanceButton = new CustomButton(ButtonVariant.CREATE);
+        addBalanceButton.addActionListener(event -> this.onAddBalanceClick(onSuccess));
+
+        CustomButton simulateButton = new CustomButton(ButtonVariant.SEARCH);
+        simulateButton.addActionListener(event -> this.onSimulateClick());
 
         this.add(addBalanceButton);
         this.add(simulateButton);
     }
 
+    private void onAddBalanceClick(Consumer<Product> onSuccess) {
+        new AddBalanceForm(this.product, onSuccess);
+    }
+
+    private void onSimulateClick() {
+        new CardsOverview(this.product.getCards());
+    }
+
     public Product getProduct() {
-        return product;
+        return this.product;
     }
 }

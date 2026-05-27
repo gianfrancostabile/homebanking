@@ -30,8 +30,16 @@ public class CardRepository extends JDBCRepository<Card, String> {
     private static final String DELETE_BY_PRODUCT_ID_QUERY = "DELETE FROM Cards WHERE product_id = ?";
     private static final DateFormat EXPIRATION_DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
-    public CardRepository(String user, String password) {
-        super("jdbc:mysql://localhost:3306/testpalermo?user=" + user + " &password=" + password);
+    private static CardRepository INSTANCE;
+    private CardRepository() {
+        super("jdbc:mysql://localhost:3306/testpalermo?user=root&password=nosequeponer");
+    }
+
+    public static CardRepository getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new CardRepository();
+        }
+        return INSTANCE;
     }
 
     @Override

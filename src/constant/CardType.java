@@ -1,6 +1,16 @@
 package constant;
 
 public enum CardType {
-    DEBIT,
-    CREDIT;
+    DEBIT("Tarjeta de Debito"),
+    CREDIT("Tarjeta de Credito");
+
+    private final String prettyName;
+
+    CardType(String prettyName) {
+        this.prettyName = prettyName;
+    }
+
+    public String getPrettyName() {
+        return prettyName;
+    }
 }

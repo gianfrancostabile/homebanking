@@ -1,7 +1,17 @@
 package constant;
 
 public enum TransactionType {
-    DEBIT,
-    CHARGE,
-    TO_PAY;
+    DEBIT("Debito"),
+    CHARGE("Recibido"),
+    TO_PAY("A pagar");
+
+    private final String prettyName;
+
+    TransactionType(String prettyName) {
+        this.prettyName = prettyName;
+    }
+
+    public String getPrettyName() {
+        return prettyName;
+    }
 }

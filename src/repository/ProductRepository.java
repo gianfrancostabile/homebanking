@@ -31,10 +31,18 @@ public class ProductRepository extends JDBCRepository<Product, String> {
     private static final String FIND_ONE_BY_ID_ALIAS_CBU_QUERY = "SELECT id, client_id, alias, cbu, type, balance, creation_date FROM Products WHERE id = ? OR alias = ? OR cbu = ? LIMIT 1";
     private static final DateFormat CREATION_DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
-    private static final CardRepository cardRepository = new CardRepository("root", "nosequeponer");
+    private static final CardRepository cardRepository = CardRepository.getInstance();
 
-    public ProductRepository(String user, String password) {
-        super("jdbc:mysql://localhost:3306/testpalermo?user=" + user + " &password=" + password);
+    private static ProductRepository INSTANCE;
+    private ProductRepository() {
+        super("jdbc:mysql://localhost:3306/testpalermo?user=root&password=nosequeponer");
+    }
+
+    public static ProductRepository getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new ProductRepository();
+        }
+        return INSTANCE;
     }
 
     @Override

@@ -8,10 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientService {
-    private final ClientRepository repository;
+    private final ClientRepository repository = ClientRepository.getInstance();
 
-    public ClientService() {
-        this.repository = new ClientRepository("root", "nosequeponer");
+    private static ClientService INSTANCE;
+    private ClientService() {
+    }
+
+    public static ClientService getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new ClientService();
+        }
+        return INSTANCE;
     }
 
     public void insert(Client client) throws JDBCException {

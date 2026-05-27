@@ -1,14 +1,14 @@
 package constant;
 
 public enum ProductType {
-    CUENTA_CORRIENTE("Cuenta Corriente", "$"),
-    CAJA_DE_AHORRO("Caja de Ahorro en Pesos", "$"),
-    CAJA_DE_AHORRO_DOLARES("Caja de Ahorro en Dolares", "U$D");
+    CUENTA_CORRIENTE("Cuenta Corriente", Currency.PESOS),
+    CAJA_DE_AHORRO("Caja de Ahorro en Pesos", Currency.PESOS),
+    CAJA_DE_AHORRO_DOLARES("Caja de Ahorro en Dolares", Currency.DOLLAR);
 
     private final String prettyName;
-    private final String currency;
+    private final Currency currency;
 
-    ProductType(String prettyName, String currency) {
+    ProductType(String prettyName, Currency currency) {
         this.prettyName = prettyName;
         this.currency = currency;
     }
@@ -18,7 +18,7 @@ public enum ProductType {
         return this.prettyName;
     }
 
-    public String getCurrency() {
+    public Currency getCurrency() {
         return currency;
     }
 }

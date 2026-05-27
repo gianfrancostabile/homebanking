@@ -20,8 +20,16 @@ public class ClientRepository extends JDBCRepository<Client, String> {
     private static final String FIND_ALL_QUERY = "SELECT id, name, lastName FROM Clients";
     private static final String FIND_ONE_BY_ID_QUERY = "SELECT id, name, lastName FROM Clients WHERE id = ?";
 
-    public ClientRepository(String user, String password) {
-        super("jdbc:mysql://localhost:3306/testpalermo?user=" + user + " &password=" + password);
+    private static ClientRepository INSTANCE;
+    private ClientRepository() {
+        super("jdbc:mysql://localhost:3306/testpalermo?user=root&password=nosequeponer");
+    }
+
+    public static ClientRepository getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new ClientRepository();
+        }
+        return INSTANCE;
     }
 
     @Override

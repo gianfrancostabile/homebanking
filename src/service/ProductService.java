@@ -1,6 +1,7 @@
 package service;
 
 import constant.CardType;
+import constant.Currency;
 import exception.JDBCException;
 import model.Card;
 import model.Product;
@@ -14,12 +15,19 @@ import java.util.List;
 import java.util.Optional;
 
 public class ProductService {
-    private final ProductRepository repository;
-    private final CardService cardService = new CardService();
-    private final TransactionService transactionService = new TransactionService();
+    private final ProductRepository repository = ProductRepository.getInstance();
+    private final CardService cardService = CardService.getInstance();
+    private final TransactionService transactionService = TransactionService.getInstance();
 
-    public ProductService() {
-        this.repository = new ProductRepository("root", "nosequeponer");
+    private static ProductService INSTANCE;
+    private ProductService() {
+    }
+
+    public static ProductService getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new ProductService();
+        }
+        return INSTANCE;
     }
 
     public void insert(Product model) throws JDBCException {
@@ -28,36 +36,45 @@ public class ProductService {
     }
 
     // TODO: transactional
+    public void deposit(String destinationId, double amount) throws JDBCException {
+        Product product = this.addBalance(destinationId, amount);
+        this.transactionService.deposit(destinationId, product.getType().getCurrency(), amount);
+    }
+
+    // TODO: transactional
     public void transfer(String sourceId, String destinationId, double amount) throws JDBCException {
         if (sourceId != null && !sourceId.isBlank()) {
             this.removeBalance(sourceId, amount);
         }
-        this.addBalance(destinationId, amount);
-        this.transactionService.transfer(sourceId, destinationId, amount);
+        Product product = this.addBalance(destinationId, amount);
+        this.transactionService.transfer(sourceId, destinationId, product.getType().getCurrency(), amount);
     }
 
     // TODO: transactional
     public void payWithCard(String productId, Card card, double amount) throws JDBCException {
         if (CardType.CREDIT.equals(card.getType())) {
+            Product source = repository.findOneById(productId);
             card.pay(amount);
             this.cardService.update(card);
-            this.transactionService.payWithCredit(productId, amount);
+            this.transactionService.payWithCredit(productId, card.getId(), source.getType().getCurrency(), amount);
         } else {
-            this.removeBalance(productId, amount);
-            this.transactionService.payWithDebit(productId, amount);
+            Product product = this.removeBalance(productId, amount);
+            this.transactionService.payWithDebit(productId, card.getId(), product.getType().getCurrency(), amount);
         }
     }
 
-    private void addBalance(String id, double amount) throws JDBCException {
+    private Product addBalance(String id, double amount) throws JDBCException {
         Product source = repository.findOneById(id);
         source.addBalance(amount);
         repository.update(source.getId(), source);
+        return source;
     }
 
-    private void removeBalance(String id, double amount) throws JDBCException {
+    private Product removeBalance(String id, double amount) throws JDBCException {
         Product source = repository.findOneById(id);
         source.removeBalance(amount);
         repository.update(source.getId(), source);
+        return source;
     }
 
     public List<Product> findByClientId(String clientId) {

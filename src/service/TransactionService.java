@@ -1,43 +1,62 @@
 package service;
 
+import constant.Currency;
+import constant.PaymentMethod;
 import constant.TransactionType;
 import exception.JDBCException;
-import model.Product;
 import model.Transaction;
-import repository.ProductRepository;
 import repository.TransactionRepository;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 public class TransactionService {
-    private final TransactionRepository repository;
+    private static TransactionService INSTANCE;
+    private final TransactionRepository repository = TransactionRepository.getInstance();
 
-    public TransactionService() {
-        this.repository = new TransactionRepository("root", "nosequeponer");
+    private TransactionService() {
     }
 
-    public void transfer(String sourceId, String destinationId, double amount) throws JDBCException {
+    public static TransactionService getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new TransactionService();
+        }
+        return INSTANCE;
+    }
+
+    public void deposit(String destinationId, Currency currency, double amount) throws JDBCException {
+        Transaction charge = new Transaction(new Date(), TransactionType.CHARGE, PaymentMethod.DEPOSIT, currency, amount, null, destinationId, null);
+        this.repository.insert(charge);
+    }
+
+    public void transfer(String sourceId, String destinationId, Currency currency, double amount) throws JDBCException {
         Date now = new Date();
         if ((sourceId == null || sourceId.isBlank()) && (destinationId != null && !destinationId.isBlank())) {
-            Transaction charge = new Transaction(now, TransactionType.CHARGE, amount, null, destinationId);
+            Transaction charge = new Transaction(now, TransactionType.CHARGE, PaymentMethod.TRANSFER, currency, amount, null, destinationId, null);
             this.repository.insert(charge);
         }
-        Transaction debit = new Transaction(now, TransactionType.DEBIT, amount, sourceId, destinationId);
-        Transaction charge = new Transaction(now, TransactionType.CHARGE, amount, sourceId, destinationId);
+        Transaction debit = new Transaction(now, TransactionType.DEBIT, PaymentMethod.TRANSFER, currency, amount, sourceId, destinationId, null);
+        Transaction charge = new Transaction(now, TransactionType.CHARGE, PaymentMethod.TRANSFER, currency, amount, sourceId, destinationId, null);
         this.repository.insert(debit);
         this.repository.insert(charge);
     }
 
-    public void payWithDebit(String sourceId, double amount) throws JDBCException {
-        Transaction debit = new Transaction(new Date(), TransactionType.DEBIT, amount, sourceId, null);
+    public void payWithDebit(String sourceId, String cardId, Currency currency, double amount) throws JDBCException {
+        Transaction debit = new Transaction(new Date(), TransactionType.DEBIT, PaymentMethod.DEBIT_CARD, currency, amount, sourceId, null, cardId);
         this.repository.insert(debit);
     }
 
-    public void payWithCredit(String sourceId, double amount) throws JDBCException {
-        Transaction toPay = new Transaction(new Date(), TransactionType.TO_PAY, amount, sourceId, null);
+    public void payWithCredit(String sourceId,  String cardId, Currency currency, double amount) throws JDBCException {
+        Transaction toPay = new Transaction(new Date(), TransactionType.TO_PAY, PaymentMethod.CREDIT_CARD, currency, amount, sourceId, null, cardId);
         this.repository.insert(toPay);
+    }
+
+    public List<Transaction> findTransactionByClientId(String clientId) {
+        try {
+            return this.repository.findTransactionByClientId(clientId);
+        } catch (Exception _) {
+            return new ArrayList<>();
+        }
     }
 }

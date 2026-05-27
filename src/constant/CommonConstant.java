@@ -32,4 +32,12 @@ public class CommonConstant {
     public static final Double MAX_BALANCE_TO_ADD = 5000000d;
     public static final Double MAX_BALANCE = Double.MAX_VALUE;
     public static final Double MAX_DEBT_BALANCE = 1000000d;
+    public static final String DATE_HEADER = "Fecha";
+    public static final String TRANSACTION_TYPE_HEADER = "Tipo";
+    public static final String PAYMENT_METHOD_HEADER = "Medio de pago";
+    public static final String TRANSACTION_AMOUNT_HEADER = "Monto";
+    public static final String TRANSACTION_ORIGIN_HEADER = "Origen";
+    public static final String TRANSACTION_DESTINATION_HEADER = "Destino";
+    public static final String TRANSACTION_DATE_FORMAT = "HH:mm:ss dd/MM/yyyy";
+    public static final int ROW_HEIGHT = 36;
 }

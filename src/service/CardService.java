@@ -5,16 +5,24 @@ import model.Card;
 import model.Product;
 import repository.CardRepository;
 import repository.ProductRepository;
+import repository.TransactionRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CardService {
-    private final CardRepository repository;
+    private final CardRepository repository = CardRepository.getInstance();
 
-    public CardService() {
-        this.repository = new CardRepository("root", "nosequeponer");
+    private static CardService INSTANCE;
+    private CardService() {
+    }
+
+    public static CardService getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new CardService();
+        }
+        return INSTANCE;
     }
 
     public void insert(Card model) throws JDBCException {

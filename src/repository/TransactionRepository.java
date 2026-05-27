@@ -1,8 +1,13 @@
 package repository;
 
+import constant.CommonConstant;
+import constant.Currency;
+import constant.PaymentMethod;
 import constant.TransactionType;
+import exception.JDBCException;
 import exception.NotFoundJDBCException;
 import model.Transaction;
+import service.TransactionService;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,20 +17,48 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class TransactionRepository extends JDBCRepository<Transaction, String> {
 
     private static final String[] INSERT_GENERATED_COLUMNS = {"id"};
-    private static final String INSERT_QUERY = "INSERT INTO Transactions(source_product_id, destination_product_id, type, amount, creation_date) VALUES (?, ?, ?, ?, ?);";
-    private static final String UPDATE_QUERY = "UPDATE Transactions SET source_product_id = ?, destination_product_id = ?, type = ?, amount = ?, creation_date = ? WHERE id = ?;";
+    private static final String INSERT_QUERY = "INSERT INTO Transactions(source_product_id, destination_product_id, card_id, type, payment_method, currency, amount, creation_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+    private static final String UPDATE_QUERY = "UPDATE Transactions SET source_product_id = ?, destination_product_id = ?, card_id = ?, type = ?, payment_method = ?, currency = ?, amount = ?, creation_date = ? WHERE id = ?;";
     private static final String DELETE_ALL_QUERY = "DELETE FROM Transactions;";
     private static final String DELETE_QUERY = "DELETE FROM Transactions WHERE id = ?;";
-    private static final String FIND_ALL_QUERY = "SELECT id, creation_date, type, amount, source_product_id, destination_product_id FROM Transactions";
-    private static final String FIND_ONE_BY_ID_QUERY = "SELECT id, creation_date, type, amount, source_product_id, destination_product_id FROM Transactions WHERE id = ?";
-    private static final DateFormat CREATION_DATE_FORMAT = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+    private static final String FIND_ALL_QUERY = "SELECT id, creation_date, type, payment_method, currency, amount, source_product_id, destination_product_id, card_id FROM Transactions";
+    private static final String FIND_ONE_BY_ID_QUERY = "SELECT id, creation_date, type, payment_method, currency, amount, source_product_id, destination_product_id, card_id FROM Transactions WHERE id = ?";
+    private static final String FIND_BY_CLIENT_ID_QUERY = """
+            SELECT
+                t.id,
+                t.creation_date,
+                t.type,
+                t.payment_method,
+                t.currency, 
+                t.amount,
+                t.source_product_id,
+            	t.destination_product_id,
+            	t.card_id
+            FROM Transactions t
+            LEFT JOIN Products p_src ON t.source_product_id = p_src.id
+            LEFT JOIN Products p_dest ON t.destination_product_id = p_dest.id
+            WHERE
+                (p_src.client_id = ? AND t.type IN ('DEBIT','TO_PAY'))
+                OR (p_dest.client_id = ? AND t.type = 'CHARGE')
+            ORDER BY t.id DESC;
+            """;
+    private static final DateFormat CREATION_DATE_FORMAT = new SimpleDateFormat(CommonConstant.TRANSACTION_DATE_FORMAT);
 
-    public TransactionRepository(String user, String password) {
-        super("jdbc:mysql://localhost:3306/testpalermo?user=" + user + " &password=" + password);
+    private static TransactionRepository INSTANCE;
+    private TransactionRepository() {
+        super("jdbc:mysql://localhost:3306/testpalermo?user=root&password=nosequeponer");
+    }
+
+    public static TransactionRepository getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new TransactionRepository();
+        }
+        return INSTANCE;
     }
 
     @Override
@@ -33,9 +66,12 @@ public class TransactionRepository extends JDBCRepository<Transaction, String> {
         PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, INSERT_GENERATED_COLUMNS);
         statement.setString(1, data.getSourceProductId());
         statement.setString(2, data.getDestinationProductId());
-        statement.setString(3, data.getType().name());
-        statement.setDouble(4, data.getAmount());
-        statement.setString(5, CREATION_DATE_FORMAT.format(data.getCreationDate()));
+        statement.setString(3, data.getCardId());
+        statement.setString(4, data.getType().name());
+        statement.setString(5, data.getPaymentMethod().name());
+        statement.setString(6, data.getCurrency().name());
+        statement.setDouble(7, data.getAmount());
+        statement.setString(8, CREATION_DATE_FORMAT.format(data.getCreationDate()));
         statement.executeUpdate();
         ResultSet resultSet = statement.getGeneratedKeys();
         if (resultSet.next()) {
@@ -49,10 +85,13 @@ public class TransactionRepository extends JDBCRepository<Transaction, String> {
         PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY);
         statement.setString(1, data.getSourceProductId());
         statement.setString(2, data.getDestinationProductId());
-        statement.setString(3, data.getType().name());
-        statement.setDouble(4, data.getAmount());
-        statement.setString(5, CREATION_DATE_FORMAT.format(data.getCreationDate()));
-        statement.setString(6, id);
+        statement.setString(3, data.getCardId());
+        statement.setString(4, data.getType().name());
+        statement.setString(5, data.getPaymentMethod().name());
+        statement.setString(6, data.getCurrency().name());
+        statement.setDouble(7, data.getAmount());
+        statement.setString(8, CREATION_DATE_FORMAT.format(data.getCreationDate()));
+        statement.setString(9, id);
         statement.execute();
     }
 
@@ -91,14 +130,35 @@ public class TransactionRepository extends JDBCRepository<Transaction, String> {
         throw new NotFoundJDBCException();
     }
 
+    public List<Transaction> findTransactionByClientId(String clientId) throws JDBCException {
+        Connection connection = this.connect();
+        ArrayList<Transaction> result = new ArrayList<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement(FIND_BY_CLIENT_ID_QUERY);
+            statement.setString(1, clientId);
+            statement.setString(2, clientId);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                result.add(this.mapTransaction(resultSet));
+            }
+        } catch (Exception _) {
+        } finally {
+            this.disconnect(connection);
+        }
+        return result;
+    }
+
     private Transaction mapTransaction(ResultSet resultSet) throws Exception {
         return new Transaction(
                 resultSet.getString(1),
                 CREATION_DATE_FORMAT.parse(resultSet.getString(2)),
                 TransactionType.valueOf(resultSet.getString(3)),
-                resultSet.getDouble(4),
-                resultSet.getString(5),
-                resultSet.getString(6)
+                PaymentMethod.valueOf(resultSet.getString(4)),
+                Currency.valueOf(resultSet.getString(5)),
+                resultSet.getDouble(6),
+                resultSet.getString(7),
+                resultSet.getString(8),
+                resultSet.getString(9)
         );
     }
 }
