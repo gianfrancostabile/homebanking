@@ -72,7 +72,7 @@ public class ProductForm extends JFrame {
         JPanel form = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
 
         CustomButton addProductButton = new CustomButton(ButtonVariant.CREATE);
-        addProductButton.addActionListener(event -> this.onAddProductClick());
+        addProductButton.addActionListener(_ -> this.onAddProductClick());
 
         form.add(new JLabel(CommonConstant.PRODUCT_FORM_FIELD));
         form.add(this.productTypeField);
@@ -90,10 +90,10 @@ public class ProductForm extends JFrame {
         JPanel footer = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
 
         CustomButton cancelButton = new CustomButton(ButtonConstant.CANCEL_BUTTON);
-        cancelButton.addActionListener(event -> this.dispose());
+        cancelButton.addActionListener(_ -> this.dispose());
 
         CustomButton submitButton = new CustomButton(ButtonConstant.UPDATE_SUBMIT_BUTTON, ButtonVariant.CREATE);
-        submitButton.addActionListener(event -> {
+        submitButton.addActionListener(_ -> {
             onSuccessSubmit.accept(this.newProducts);
             this.dispose();
         });

@@ -7,7 +7,6 @@ import constant.TransactionType;
 import exception.JDBCException;
 import exception.NotFoundJDBCException;
 import model.Transaction;
-import service.TransactionService;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,8 +15,9 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class TransactionRepository extends JDBCRepository<Transaction, String> {
 
@@ -43,13 +43,16 @@ public class TransactionRepository extends JDBCRepository<Transaction, String> {
             LEFT JOIN Products p_src ON t.source_product_id = p_src.id
             LEFT JOIN Products p_dest ON t.destination_product_id = p_dest.id
             WHERE
-                (p_src.client_id = ? AND t.type IN ('DEBIT','TO_PAY'))
-                OR (p_dest.client_id = ? AND t.type = 'CHARGE')
+                ((p_src.client_id = ? AND t.type IN ('DEBIT','TO_PAY'))
+                OR (p_dest.client_id = ? AND t.type = 'CHARGE'))
+                AND t.creation_date BETWEEN ? AND ?
+                AND (? IS NULL OR t.type = ?)
             ORDER BY t.id DESC;
             """;
     private static final DateFormat CREATION_DATE_FORMAT = new SimpleDateFormat(CommonConstant.TRANSACTION_DATE_FORMAT);
 
     private static TransactionRepository INSTANCE;
+
     private TransactionRepository() {
         super("jdbc:mysql://localhost:3306/testpalermo?user=root&password=nosequeponer");
     }
@@ -130,13 +133,22 @@ public class TransactionRepository extends JDBCRepository<Transaction, String> {
         throw new NotFoundJDBCException();
     }
 
-    public List<Transaction> findTransactionByClientId(String clientId) throws JDBCException {
+    public List<Transaction> findTransactionByClientIdAndDateAndType(String clientId, String from, String to, TransactionType type) throws JDBCException {
         Connection connection = this.connect();
         ArrayList<Transaction> result = new ArrayList<>();
         try {
             PreparedStatement statement = connection.prepareStatement(FIND_BY_CLIENT_ID_QUERY);
             statement.setString(1, clientId);
             statement.setString(2, clientId);
+            statement.setString(3, "00:00:00 " + from);
+            statement.setString(4, "23:59:59 " + to);
+            if (type == null || TransactionType.NONE.equals(type)) {
+                statement.setNull(5, java.sql.Types.VARCHAR);
+                statement.setNull(6, java.sql.Types.VARCHAR);
+            } else {
+                statement.setString(5, type.name());
+                statement.setString(6, type.name());
+            }
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 result.add(this.mapTransaction(resultSet));

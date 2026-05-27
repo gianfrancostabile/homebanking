@@ -18,6 +18,8 @@ public class FeedbackConstant {
     public static final String ORIGIN_PRODUCT_DOES_NOT_HAVE_BALANCE = "La cuenta de origen no cuenta con fondos o excedio el limite de credito";
     public static final String PRODUCT_CARD_NOT_FOUND = "No se encontro el producto relacionado a la tarjeta";
     public static final String MAX_BALANCE_TO_TRANSFER_FIELD = "El monto a operar no puede ser superior a " + CommonConstant.MAX_BALANCE_TO_ADD;
+    public static final String INVALID_DATE_FORMAT = "Ingresa un formato de fecha válido (" + CommonConstant.DAY_FORMAT + ").";
+    public static final String TO_GREATER_THAN_FROM_DATE = "La fecha 'Desde' no puede ser posterior a la fecha 'Hasta'.";
     public static final String ERROR_TITLE = "Ups, Hubo un error!";
     public static final String ERROR_ADDING_CLIENT_MESSAGE = "Hubo un error al agregar al cliente a la base";
     public static final String ERROR_UPDATING_CLIENT_MESSAGE = "Hubo un error al actualizar al cliente a la base";

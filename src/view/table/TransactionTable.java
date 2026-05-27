@@ -75,4 +75,8 @@ public class TransactionTable extends JPanel {
             transactions.forEach(this::appendTransaction);
         }
     }
+
+    public void clearTable() {
+        this.tableModel.setRowCount(0);
+    }
 }

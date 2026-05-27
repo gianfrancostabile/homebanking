@@ -47,14 +47,14 @@ public class TransactionService {
         this.repository.insert(debit);
     }
 
-    public void payWithCredit(String sourceId,  String cardId, Currency currency, double amount) throws JDBCException {
+    public void payWithCredit(String sourceId, String cardId, Currency currency, double amount) throws JDBCException {
         Transaction toPay = new Transaction(new Date(), TransactionType.TO_PAY, PaymentMethod.CREDIT_CARD, currency, amount, sourceId, null, cardId);
         this.repository.insert(toPay);
     }
 
-    public List<Transaction> findTransactionByClientId(String clientId) {
+    public List<Transaction> findTransactionByClientIdAndDateAndType(String clientId, String from, String to, TransactionType type) {
         try {
-            return this.repository.findTransactionByClientId(clientId);
+            return this.repository.findTransactionByClientIdAndDateAndType(clientId, from, to, type);
         } catch (Exception _) {
             return new ArrayList<>();
         }

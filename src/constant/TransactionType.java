@@ -1,6 +1,7 @@
 package constant;
 
 public enum TransactionType {
+    NONE("Todos"),
     DEBIT("Debito"),
     CHARGE("Recibido"),
     TO_PAY("A pagar");
@@ -12,6 +13,11 @@ public enum TransactionType {
     }
 
     public String getPrettyName() {
+        return prettyName;
+    }
+
+    @Override
+    public String toString() {
         return prettyName;
     }
 }

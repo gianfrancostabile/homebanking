@@ -39,5 +39,9 @@ public class CommonConstant {
     public static final String TRANSACTION_ORIGIN_HEADER = "Origen";
     public static final String TRANSACTION_DESTINATION_HEADER = "Destino";
     public static final String TRANSACTION_DATE_FORMAT = "HH:mm:ss dd/MM/yyyy";
+    public static final String DAY_FORMAT = "dd/MM/yyyy";
     public static final int ROW_HEIGHT = 36;
+    public static final String FROM_LABEL = "Desde:";
+    public static final String TO_LABEL = "Hasta:";
+    public static final String TYPE_LABEL = "Tipo:";
 }

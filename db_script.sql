@@ -1,6 +1,4 @@
-create database testpalermo;
 use testpalermo;
-
 CREATE TABLE Clients(
 	id BIGINT AUTO_INCREMENT PRIMARY KEY, 
     name varchar(60), 
@@ -106,3 +104,39 @@ BEGIN
     SET NEW.card_number = CONCAT(card_prefix, LPAD(next_sequence, 8, '0'));
 END//
 DELIMITER ;
+
+select * from products;
+select * from clients;
+select * from cards;
+select * from transactions;
+delete from products;
+delete from cards;
+delete from transactions;
+drop trigger before_insert_card;
+select * from transactions;
+drop table cards;
+drop table cards;
+SELECT 
+    t.id,
+    t.creation_date,
+    t.type,
+    t.payment_method,
+    t.currency,
+    t.amount,
+    t.source_product_id,
+	t.destination_product_id
+FROM Transactions t
+LEFT JOIN Products p_src ON t.source_product_id = p_src.id
+LEFT JOIN Products p_dest ON t.destination_product_id = p_dest.id
+WHERE 
+    (p_src.client_id = 1 AND (t.type IN ('DEBIT','TO_PAY')))
+    OR (p_dest.client_id = 1 AND t.type = 'CHARGE')
+	AND t.creation_date BETWEEN "01/05/2026" AND "27/05/2026"
+	AND t.type IN ('TO_PAY')
+ORDER BY t.id DESC;
+
+select * from transactions;
+drop table transactions;
+drop table cards;
+drop table products;
+drop table clients;

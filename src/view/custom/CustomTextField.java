@@ -5,14 +5,19 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class CustomTextField extends JTextField {
 
     private static final Color DEFAULT_BORDER_COLOR = new Color(204, 204, 204);
     private static final Color FOCUS_BORDER_COLOR = new Color(0, 123, 255);
+    private static final Color ERROR_BORDER_COLOR = new Color(220, 53, 69);
     private static final Color BACKGROUND_COLOR = Color.WHITE;
 
     private Color currentBorderColor = DEFAULT_BORDER_COLOR;
+    private boolean hasError = false;
 
     public CustomTextField(String value) {
         super(value);
@@ -36,16 +41,33 @@ public class CustomTextField extends JTextField {
         this.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                currentBorderColor = FOCUS_BORDER_COLOR;
+                currentBorderColor = hasError ? ERROR_BORDER_COLOR : FOCUS_BORDER_COLOR;
                 repaint();
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                currentBorderColor = DEFAULT_BORDER_COLOR;
+                currentBorderColor = hasError ? ERROR_BORDER_COLOR : DEFAULT_BORDER_COLOR;
                 repaint();
             }
         });
+    }
+
+    public void setError(boolean error) {
+        this.hasError = error;
+        this.currentBorderColor = error ? ERROR_BORDER_COLOR : DEFAULT_BORDER_COLOR;
+        this.repaint();
+    }
+
+    public boolean validateDateFormat(DateTimeFormatter formatter) {
+        try {
+            LocalDate.parse(this.getText().trim(), formatter);
+            setError(false);
+            return true;
+        } catch (DateTimeParseException e) {
+            setError(true);
+            return false;
+        }
     }
 
     @Override
@@ -66,7 +88,7 @@ public class CustomTextField extends JTextField {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         g2.setColor(currentBorderColor);
-        g2.setStroke(new BasicStroke(1.5f)); // Grosor del borde
+        g2.setStroke(new BasicStroke(1.5f));
         g2.drawRoundRect(0, 0, this.getWidth() - 1, this.getHeight() - 1, 8, 8);
 
         g2.dispose();
