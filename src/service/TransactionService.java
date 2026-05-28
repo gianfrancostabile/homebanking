@@ -25,6 +25,24 @@ public class TransactionService {
         return INSTANCE;
     }
 
+    public void interest(String productId, Currency currency, double amount) throws JDBCException {
+        if (amount == 0) {
+            return;
+        }
+        TransactionType type;
+        String sourceId = null;
+        String destinationId = null;
+        if (amount < 0) {
+            type = TransactionType.DEBIT;
+            sourceId = productId;
+        } else {
+            type = TransactionType.CHARGE;
+            destinationId = productId;
+        }
+        Transaction charge = new Transaction(new Date(), type, PaymentMethod.INTEREST, currency, amount, sourceId, destinationId, null);
+        this.repository.insert(charge);
+    }
+
     public void deposit(String destinationId, Currency currency, double amount) throws JDBCException {
         Transaction charge = new Transaction(new Date(), TransactionType.CHARGE, PaymentMethod.DEPOSIT, currency, amount, null, destinationId, null);
         this.repository.insert(charge);

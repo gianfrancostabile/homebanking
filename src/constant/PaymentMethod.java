@@ -4,7 +4,8 @@ public enum PaymentMethod {
     TRANSFER("Transferencia"),
     CREDIT_CARD("Tarjeta de Credito"),
     DEBIT_CARD("Tarjeta de Debito"),
-    DEPOSIT("Deposito Bancario");
+    DEPOSIT("Deposito Bancario"),
+    INTEREST("Interes");
 
     private final String prettyName;
 

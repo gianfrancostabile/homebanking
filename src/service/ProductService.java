@@ -1,25 +1,21 @@
 package service;
 
 import constant.CardType;
-import constant.Currency;
 import exception.JDBCException;
 import model.Card;
 import model.Product;
-import model.Transaction;
 import repository.ProductRepository;
-import repository.TransactionRepository;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 public class ProductService {
+    private static ProductService INSTANCE;
     private final ProductRepository repository = ProductRepository.getInstance();
     private final CardService cardService = CardService.getInstance();
     private final TransactionService transactionService = TransactionService.getInstance();
 
-    private static ProductService INSTANCE;
     private ProductService() {
     }
 
@@ -90,6 +86,23 @@ public class ProductService {
             return repository.findByIdOrAliasOrCbu(input);
         } catch (Exception e) {
             return Optional.empty();
+        }
+    }
+
+    public void applyInterestOnAllProducts() throws JDBCException {
+        List<Product> products = this.repository.findAll();
+        for (Product product : products) {
+            try {
+                double newBalanceWithInterest = product.getBalance() * product.getType().getInterest();
+                double interestGenerated = newBalanceWithInterest - product.getBalance();
+                if (interestGenerated == 0) {
+                    continue;
+                }
+                product.setBalance(newBalanceWithInterest);
+                this.repository.update(product.getId(), product);
+                this.transactionService.interest(product.getId(), product.getType().getCurrency(), interestGenerated);
+            } catch (JDBCException e) {
+            }
         }
     }
 

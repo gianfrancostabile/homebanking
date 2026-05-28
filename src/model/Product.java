@@ -77,6 +77,9 @@ public class Product {
     }
 
     public void setBalance(Double balance) {
+        if (balance < 0d) {
+            balance = 0d;
+        }
         this.balance = balance;
     }
 

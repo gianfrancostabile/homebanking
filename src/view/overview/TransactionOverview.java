@@ -3,6 +3,7 @@ package view.overview;
 import constant.*;
 import model.Client;
 import model.Transaction;
+import service.ClientService;
 import service.TransactionService;
 import util.Dialog;
 import view.custom.CustomButton;
@@ -25,10 +26,12 @@ public class TransactionOverview extends JFrame {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(CommonConstant.DAY_FORMAT);
 
     // Servicios
+    private final ClientService clientService = ClientService.getInstance();
     private final TransactionService transactionService = TransactionService.getInstance();
     // Estado
     private final Client client;
     // Componentes UI
+    private CustomComboBox<Client> clientField;
     private CustomComboBox<TransactionType> typeField;
     private CustomTextField fromDateField;
     private CustomTextField toDateField;
@@ -75,6 +78,12 @@ public class TransactionOverview extends JFrame {
         LocalDate today = LocalDate.now();
         LocalDate firstDayOfMonth = today.withDayOfMonth(1);
 
+        DefaultComboBoxModel<Client> clientsBoxModel = new DefaultComboBoxModel<>();
+        this.clientService.findAll().forEach(clientsBoxModel::addElement);
+        clientField = new CustomComboBox<>(clientsBoxModel);
+        clientField.setPreferredSize(new Dimension(220, 35));
+        clientField.setSelectedItem(this.client);
+
         fromDateField = new CustomTextField(firstDayOfMonth.format(DATE_FORMATTER));
         fromDateField.setPreferredSize(new Dimension(110, 35));
 
@@ -90,29 +99,37 @@ public class TransactionOverview extends JFrame {
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        form.add(new JLabel(CommonConstant.FROM_LABEL), gbc);
+        form.add(new JLabel(CommonConstant.CLIENT_FIELD), gbc);
 
         gbc.gridx = 1;
         gbc.insets = new Insets(0, 0, 0, 20);
-        form.add(fromDateField, gbc);
+        form.add(clientField, gbc);
 
         gbc.gridx = 2;
         gbc.insets = new Insets(0, 0, 0, 5);
-        form.add(new JLabel(CommonConstant.TO_LABEL), gbc);
+        form.add(new JLabel(CommonConstant.FROM_LABEL), gbc);
 
         gbc.gridx = 3;
         gbc.insets = new Insets(0, 0, 0, 20);
-        form.add(toDateField, gbc);
+        form.add(fromDateField, gbc);
 
         gbc.gridx = 4;
         gbc.insets = new Insets(0, 0, 0, 5);
-        form.add(new JLabel(CommonConstant.TYPE_LABEL), gbc);
+        form.add(new JLabel(CommonConstant.TO_LABEL), gbc);
 
         gbc.gridx = 5;
+        gbc.insets = new Insets(0, 0, 0, 20);
+        form.add(toDateField, gbc);
+
+        gbc.gridx = 6;
+        gbc.insets = new Insets(0, 0, 0, 5);
+        form.add(new JLabel(CommonConstant.TYPE_LABEL), gbc);
+
+        gbc.gridx = 7;
         gbc.insets = new Insets(0, 0, 0, 25);
         form.add(typeField, gbc);
 
-        gbc.gridx = 6;
+        gbc.gridx = 8;
         gbc.insets = new Insets(0, 0, 0, 0);
         form.add(searchButton, gbc);
 
@@ -142,13 +159,14 @@ public class TransactionOverview extends JFrame {
     }
 
     private void loadAndPopulateTransactions() {
+        Client selectedClient = (Client) clientField.getSelectedItem();
         String from = fromDateField.getText().trim();
         String to = toDateField.getText().trim();
         TransactionType selectedType = (TransactionType) typeField.getSelectedItem();
 
         TransactionType typeFilter = TransactionType.NONE.equals(selectedType) ? null : selectedType;
 
-        List<Transaction> transactions = transactionService.findTransactionByClientIdAndDateAndType(client.getId(), from, to, typeFilter);
+        List<Transaction> transactions = transactionService.findTransactionByClientIdAndDateAndType(selectedClient.getId(), from, to, typeFilter);
 
         transactionTable.clearTable();
         transactionTable.appendTransactions(transactions);
