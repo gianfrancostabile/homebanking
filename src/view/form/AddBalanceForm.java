@@ -24,10 +24,14 @@ public class AddBalanceForm extends JFrame {
     // State
     private final Product product;
 
-    public AddBalanceForm(Product product, Consumer<Product> onSuccessSubmit) {
+    // Actions
+    private final Runnable onSuccessSubmit;
+
+    public AddBalanceForm(Product product, Runnable onSuccessSubmit) {
         this.product = product;
+        this.onSuccessSubmit = onSuccessSubmit;
         this.setupFrame();
-        this.initComponents(onSuccessSubmit);
+        this.initComponents();
     }
 
     private void setupFrame() {
@@ -35,7 +39,7 @@ public class AddBalanceForm extends JFrame {
         this.setTitle(TitleConstant.ADD_BALANCE_FORM);
     }
 
-    private void initComponents(Consumer<Product> onSuccessSubmit) {
+    private void initComponents() {
         this.balanceField = new CustomFormattedTextField();
 
         JPanel panel = new JPanel(new BorderLayout(10, 10));
@@ -43,7 +47,7 @@ public class AddBalanceForm extends JFrame {
 
         panel.add(new JLabel(TitleConstant.ADD_BALANCE_FORM, SwingConstants.CENTER), BorderLayout.NORTH);
         panel.add(this.buildForm(), BorderLayout.CENTER);
-        panel.add(this.buildFooter(onSuccessSubmit), BorderLayout.SOUTH);
+        panel.add(this.buildFooter(), BorderLayout.SOUTH);
 
         this.add(panel);
         this.pack();
@@ -60,14 +64,14 @@ public class AddBalanceForm extends JFrame {
         return form;
     }
 
-    private JPanel buildFooter(Consumer<Product> onSuccessSubmit) {
+    private JPanel buildFooter() {
         JPanel footer = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
         CustomButton cancelButton = new CustomButton(ButtonConstant.CANCEL_BUTTON);
         cancelButton.addActionListener(_ -> this.dispose());
 
         CustomButton submitButton = new CustomButton(ButtonConstant.SUBMIT_BUTTON, ButtonVariant.CREATE);
-        submitButton.addActionListener(_ -> this.onSubmit(onSuccessSubmit));
+        submitButton.addActionListener(_ -> this.onSubmit());
 
         footer.add(cancelButton);
         footer.add(submitButton);
@@ -75,7 +79,7 @@ public class AddBalanceForm extends JFrame {
         return footer;
     }
 
-    private void onSubmit(Consumer<Product> onSuccessSubmit) {
+    private void onSubmit() {
         if (!this.isBalanceValid()) {
             return;
         }
@@ -84,8 +88,7 @@ public class AddBalanceForm extends JFrame {
 
         try {
             this.productService.deposit(this.product.getId(), parsedBalance);
-            this.product.addBalance(parsedBalance);
-            onSuccessSubmit.accept(this.product);
+            this.onSuccessSubmit.run();
             this.dispose();
         } catch (Exception exception) {
             Dialog.showError(this, FeedbackConstant.ERROR_ADDING_PRODUCT_BALANCE_MESSAGE);

@@ -8,32 +8,33 @@ import view.overview.CardsOverview;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.function.Consumer;
 
 public class SubMenuProductTable extends JPanel {
 
+    private final Runnable onSuccess;
     private final Product product;
 
-    public SubMenuProductTable(Product product, Consumer<Product> onSuccess) {
+    public SubMenuProductTable(Product product, Runnable onSuccess) {
         this.product = product;
-        this.initComponents(onSuccess);
+        this.onSuccess = onSuccess;
+        initComponents();
     }
 
-    private void initComponents(Consumer<Product> onSuccess) {
+    private void initComponents() {
         this.setLayout(new FlowLayout(FlowLayout.CENTER, 6, 0));
         this.setOpaque(false);
 
         CustomButton addBalanceButton = new CustomButton(ButtonVariant.CREATE);
-        addBalanceButton.addActionListener(event -> this.onAddBalanceClick(onSuccess));
+        addBalanceButton.addActionListener(_ -> onAddBalanceClick());
 
         CustomButton simulateButton = new CustomButton(ButtonVariant.SEARCH);
-        simulateButton.addActionListener(event -> this.onSimulateClick());
+        simulateButton.addActionListener(_ -> onSimulateClick());
 
         this.add(addBalanceButton);
         this.add(simulateButton);
     }
 
-    private void onAddBalanceClick(Consumer<Product> onSuccess) {
+    private void onAddBalanceClick() {
         new AddBalanceForm(this.product, onSuccess);
     }
 

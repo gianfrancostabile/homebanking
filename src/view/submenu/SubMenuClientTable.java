@@ -18,11 +18,10 @@ import view.overview.TransactionOverview;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class SubMenuClientTable extends JPanel {
 
-    // Singletons / Services
+    // Services
     private final ClientService clientService = ClientService.getInstance();
     private final ProductService productService = ProductService.getInstance();
     private final CardService cardService = CardService.getInstance();
@@ -30,27 +29,33 @@ public class SubMenuClientTable extends JPanel {
     // State
     private final Client client;
 
-    public SubMenuClientTable(Client client, Consumer<Client> onUpdate, Consumer<String> onDelete) {
+    // Actions
+    private final Runnable onUpdate;
+    private final Runnable onDelete;
+
+    public SubMenuClientTable(Client client, Runnable onUpdate, Runnable onDelete) {
         this.client = client;
-        this.initComponents(onUpdate, onDelete);
+        this.onUpdate = onUpdate;
+        this.onDelete = onDelete;
+        initComponents();
     }
 
-    private void initComponents(Consumer<Client> onUpdate, Consumer<String> onDelete) {
+    private void initComponents() {
         this.setLayout(new FlowLayout(FlowLayout.CENTER, 8, 0));
         this.setOpaque(false);
 
         CustomButton simulateButton = new CustomButton(ButtonVariant.SEARCH);
-        simulateButton.addActionListener(_ -> this.onSimulateClick());
+        simulateButton.addActionListener(_ -> onSimulateClick());
 
         CustomButton handleProductsButton = new CustomButton(ButtonVariant.CREATE);
-        handleProductsButton.addActionListener(_ -> this.onHandleProductsClick());
+        handleProductsButton.addActionListener(_ -> onHandleProductsClick());
 
         CustomButton updateButton = new CustomButton(ButtonVariant.UPDATE);
-        updateButton.addActionListener(_ -> this.onUpdateClick(onUpdate));
+        updateButton.addActionListener(_ -> onUpdateClick());
 
         CustomButton deleteButton = new CustomButton(ButtonVariant.DELETE);
         deleteButton.addActionListener(_ ->
-                new ConfirmModal(FeedbackConstant.INFO_DELETE_CLIENT, () -> this.deleteClient(onDelete))
+                new ConfirmModal(FeedbackConstant.INFO_DELETE_CLIENT, this::deleteClient)
         );
 
         this.add(simulateButton);
@@ -60,51 +65,52 @@ public class SubMenuClientTable extends JPanel {
     }
 
     private void onSimulateClick() {
-        new TransactionOverview(this.client);
+        new TransactionOverview(client);
     }
 
     private void onHandleProductsClick() {
-        new ProductForm(this.client, this::processProductsSubmission);
+        new ProductForm(client, this::processProductsSubmission);
     }
 
     private void processProductsSubmission(List<Product> products) {
         try {
             for (Product product : products) {
-                this.productService.insert(product);
+                productService.insert(product);
                 String productId = product.getId();
 
                 for (Card card : product.getCards()) {
                     card.setProductId(productId);
-                    this.cardService.insert(card);
+                    cardService.insert(card);
                 }
             }
+            onUpdate.run();
+
         } catch (Exception e) {
             Dialog.showError(this, FeedbackConstant.ERROR_UPDATING_CLIENT_PRODUCTS_MESSAGE);
         }
     }
 
-    private void onUpdateClick(Consumer<Client> onUpdate) {
-        new ClientForm(this.client, updatedClient -> {
+    private void onUpdateClick() {
+        new ClientForm(client, updatedClient -> {
             try {
-                this.clientService.update(updatedClient);
-                onUpdate.accept(updatedClient);
+                clientService.update(updatedClient);
+                onUpdate.run();
             } catch (Exception e) {
                 Dialog.showError(this, FeedbackConstant.ERROR_UPDATING_CLIENT_MESSAGE);
             }
         });
     }
 
-    public void deleteClient(Consumer<String> onDelete) {
+    public void deleteClient() {
         try {
-            String clientId = this.client.getId();
-            this.clientService.deleteById(clientId);
-            onDelete.accept(clientId);
+            clientService.deleteById(client.getId());
+            onDelete.run();
         } catch (Exception e) {
             Dialog.showError(this, FeedbackConstant.ERROR_DELETING_CLIENT_MESSAGE);
         }
     }
 
     public Client getClient() {
-        return this.client;
+        return client;
     }
 }

@@ -1,6 +1,9 @@
 package view.overview;
 
-import constant.*;
+import constant.CommonConstant;
+import constant.FeedbackConstant;
+import constant.FormFieldConstant;
+import constant.TitleConstant;
 import enums.ButtonVariant;
 import enums.TransactionType;
 import model.Client;
@@ -22,17 +25,19 @@ import java.util.List;
 
 public class TransactionOverview extends JFrame {
 
-    // Configuración Visual
+    // UI Configuration
     private static final int PADDING = 15;
     private static final int GAP = 10;
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(CommonConstant.DAY_FORMAT);
 
-    // Servicios
+    // Services
     private final ClientService clientService = ClientService.getInstance();
     private final TransactionService transactionService = TransactionService.getInstance();
-    // Estado
+
+    // State
     private final Client client;
-    // Componentes UI
+
+    // Components UI
     private CustomComboBox<Client> clientField;
     private CustomComboBox<TransactionType> typeField;
     private CustomTextField fromDateField;
@@ -170,7 +175,6 @@ public class TransactionOverview extends JFrame {
 
         List<Transaction> transactions = transactionService.findTransactionByClientIdAndDateAndType(selectedClient.getId(), from, to, typeFilter);
 
-        transactionTable.clearTable();
-        transactionTable.appendTransactions(transactions);
+        transactionTable.reAppend(transactions);
     }
 }

@@ -295,8 +295,7 @@ public class TransferForm extends JFrame {
         double parsedBalance = Double.parseDouble(this.transferAmountField.getText());
         try {
             this.productService.transfer(this.originProduct.getId(), this.destinationProduct.getId(), parsedBalance);
-            JOptionPane.showMessageDialog(this, FeedbackConstant.TRANSFER_DONE,
-                    FeedbackConstant.SUCCESS_TITLE, JOptionPane.INFORMATION_MESSAGE);
+            Dialog.showSuccess(this, FeedbackConstant.TRANSFER_DONE);
             this.dispose();
         } catch (JDBCException e) {
             Dialog.showError(this, FeedbackConstant.ERROR_TRANSFERING_MESSAGE);

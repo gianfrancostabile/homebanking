@@ -1,44 +1,27 @@
 package view.submenu;
 
+import model.Client;
 import model.Product;
+import view.custom.SubMenuCellEditor;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 import java.awt.*;
-import java.util.function.Consumer;
 
-public class SubMenuProductEditor extends AbstractCellEditor implements TableCellEditor {
+public class SubMenuProductEditor extends SubMenuCellEditor<Product> {
 
-    private final Consumer<Product> onSuccess;
-    private SubMenuProductTable editPanel;
+    private final Runnable onSuccess;
 
-    public SubMenuProductEditor(Consumer<Product> onSuccess) {
+    public SubMenuProductEditor(Runnable onSuccess) {
         this.onSuccess = onSuccess;
+        super();
     }
 
     @Override
-    public Component getTableCellEditorComponent(JTable table, Object value,
-                                                 boolean isSelected, int row, int column) {
-        if (value instanceof Product product) {
-            this.editPanel = new SubMenuProductTable(product,
-                    data -> {
-                        this.stopCellEditing();
-                        this.onSuccess.accept(data);
-                    });
-
-            JPanel container = new JPanel(new GridBagLayout());
-            container.setOpaque(true);
-            container.setBackground(table.getSelectionBackground());
-            container.add(this.editPanel);
-
-            return container;
-        }
-
-        return new JLabel();
-    }
-
-    @Override
-    public Object getCellEditorValue() {
-        return this.editPanel != null ? this.editPanel.getProduct() : null;
+    protected JPanel buildPanel(Product data) {
+        return new SubMenuProductTable(data, () -> {
+            stopCellEditing();
+            onSuccess.run();
+        });
     }
 }

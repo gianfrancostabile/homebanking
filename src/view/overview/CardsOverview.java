@@ -38,7 +38,7 @@ public class CardsOverview extends JFrame {
         JPanel centerPanel = new JPanel(new BorderLayout());
 
         CardTable table = new CardTable();
-        table.appendCards(cards);
+        table.append(cards);
 
         centerPanel.add(table, BorderLayout.CENTER);
         return centerPanel;

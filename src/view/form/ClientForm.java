@@ -81,11 +81,11 @@ public class ClientForm extends JFrame {
         JPanel footer = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
         CustomButton cancelButton = new CustomButton(ButtonConstant.CANCEL_BUTTON);
-        cancelButton.addActionListener(event -> this.dispose());
+        cancelButton.addActionListener(_ -> this.dispose());
 
         String submitText = (this.clientId == null) ? ButtonConstant.SUBMIT_BUTTON : ButtonConstant.UPDATE_SUBMIT_BUTTON;
         CustomButton submitButton = new CustomButton(submitText, ButtonVariant.CREATE);
-        submitButton.addActionListener(event -> this.onSubmit(onSuccessSubmit));
+        submitButton.addActionListener(_ -> this.onSubmit(onSuccessSubmit));
 
         footer.add(cancelButton);
         footer.add(submitButton);

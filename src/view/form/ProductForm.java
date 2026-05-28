@@ -25,16 +25,16 @@ public class ProductForm extends JFrame {
 
     // UI Components
     private CustomComboBox<ProductType> productTypeField;
-    private final ProductTable productTable = new ProductTable();
+    private final ProductTable productTable;
 
     // State
-    private final List<Product> clientProducts;
     private final List<Product> newProducts = new ArrayList<>();
     private final Client client;
 
     public ProductForm(Client client, Consumer<List<Product>> onSuccessSubmit) {
         this.client = client;
-        this.clientProducts = this.productService.findByClientId(client.getId());
+        this.productTable = new ProductTable(this::refillTable);
+        this.refillTable();
 
         this.setupFrame();
         this.initComponents(onSuccessSubmit);
@@ -65,7 +65,7 @@ public class ProductForm extends JFrame {
         JPanel centerPanel = new JPanel(new BorderLayout(0, 10));
 
         centerPanel.add(this.buildForm(), BorderLayout.NORTH);
-        centerPanel.add(this.buildProductList(), BorderLayout.CENTER);
+        centerPanel.add(this.productTable, BorderLayout.CENTER);
 
         return centerPanel;
     }
@@ -81,11 +81,6 @@ public class ProductForm extends JFrame {
         form.add(addProductButton);
 
         return form;
-    }
-
-    private JPanel buildProductList() {
-        this.productTable.appendProducts(this.clientProducts);
-        return this.productTable;
     }
 
     private JPanel buildFooter(Consumer<List<Product>> onSuccessSubmit) {
@@ -114,8 +109,11 @@ public class ProductForm extends JFrame {
 
         Product product = ProductBuilder.build(selectedType, this.client);
 
-        this.clientProducts.add(product);
         this.newProducts.add(product);
-        this.productTable.appendProduct(product);
+        this.productTable.append(product);
+    }
+
+    private void refillTable() {
+        this.productTable.reAppend(this.productService.findByClientId(client.getId()));
     }
 }

@@ -11,4 +11,5 @@ public class CommonConstant {
     public static final String TRANSACTION_DATE_FORMAT = "HH:mm:ss dd/MM/yyyy";
     public static final String DAY_FORMAT = "dd/MM/yyyy";
     public static final int ROW_HEIGHT = 36;
+    public static final String FONT_FAMILY = "Segoe UI";
 }

@@ -1,50 +1,25 @@
 package view.submenu;
 
 import model.Client;
+import view.custom.SubMenuCellEditor;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 import java.awt.*;
-import java.util.function.Consumer;
 
-public class SubMenuClientEditor extends AbstractCellEditor implements TableCellEditor {
+public class SubMenuClientEditor extends SubMenuCellEditor<Client> {
 
-    private SubMenuClientTable editPanel;
-    private final Consumer<Client> onUpdate;
-    private final Consumer<String> onDelete;
+    private final Runnable onUpdate;
+    private final Runnable onDelete;
 
-    public SubMenuClientEditor(Consumer<Client> onUpdate, Consumer<String> onDelete) {
+    public SubMenuClientEditor(Runnable onUpdate, Runnable onDelete) {
         this.onUpdate = onUpdate;
         this.onDelete = onDelete;
+        super();
     }
 
     @Override
-    public Component getTableCellEditorComponent(JTable table, Object value,
-                                                 boolean isSelected, int row, int column) {
-        if (value instanceof Client client) {
-            this.editPanel = new SubMenuClientTable(client,
-                    updatedClient -> {
-                        this.stopCellEditing();
-                        this.onUpdate.accept(updatedClient);
-                    },
-                    clientId -> {
-                        this.stopCellEditing();
-                        this.onDelete.accept(clientId);
-                    });
-
-            JPanel container = new JPanel(new GridBagLayout());
-            container.setOpaque(true);
-            container.setBackground(table.getSelectionBackground());
-            container.add(this.editPanel);
-
-            return container;
-        }
-
-        return new JLabel();
-    }
-
-    @Override
-    public Object getCellEditorValue() {
-        return this.editPanel != null ? this.editPanel.getClient() : null;
+    protected JPanel buildPanel(Client data) {
+        return new SubMenuClientTable(data, onUpdate, onDelete);
     }
 }
