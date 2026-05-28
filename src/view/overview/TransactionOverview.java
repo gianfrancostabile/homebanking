@@ -18,8 +18,12 @@ import view.table.TransactionTable;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.ItemEvent;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -90,19 +94,27 @@ public class TransactionOverview extends JFrame {
         clientField = new CustomComboBox<>(clientsBoxModel);
         clientField.setPreferredSize(new Dimension(220, 35));
         clientField.setSelectedItem(this.client);
+        clientField.addItemListener((event) -> {
+            if (event.getStateChange() == ItemEvent.SELECTED) {
+                onSearch();
+            }
+        });
 
         fromDateField = new CustomTextField(firstDayOfMonth.format(DATE_FORMATTER));
         fromDateField.setPreferredSize(new Dimension(110, 35));
+        fromDateField.actionAfterInactiveTimer(3000, this::onSearch);
 
         toDateField = new CustomTextField(today.format(DATE_FORMATTER));
         toDateField.setPreferredSize(new Dimension(110, 35));
+        toDateField.actionAfterInactiveTimer(3000, this::onSearch);
 
         typeField = new CustomComboBox<>(TransactionType.values());
         typeField.setPreferredSize(new Dimension(140, 35));
-
-        CustomButton searchButton = new CustomButton(ButtonVariant.SEARCH);
-        searchButton.setPreferredSize(new Dimension(100, 35));
-        searchButton.addActionListener(_ -> onSearch());
+        typeField.addItemListener((event) -> {
+            if (event.getStateChange() == ItemEvent.SELECTED) {
+                onSearch();
+            }
+        });
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -136,10 +148,6 @@ public class TransactionOverview extends JFrame {
         gbc.insets = new Insets(0, 0, 0, 25);
         form.add(typeField, gbc);
 
-        gbc.gridx = 8;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        form.add(searchButton, gbc);
-
         return form;
     }
 
@@ -167,13 +175,14 @@ public class TransactionOverview extends JFrame {
 
     private void loadAndPopulateTransactions() {
         Client selectedClient = (Client) clientField.getSelectedItem();
-        String from = fromDateField.getText().trim();
-        String to = toDateField.getText().trim();
+        LocalDate from = LocalDate.parse(fromDateField.getText().trim(), DATE_FORMATTER);
+        LocalDate to = LocalDate.parse(toDateField.getText().trim(), DATE_FORMATTER);
         TransactionType selectedType = (TransactionType) typeField.getSelectedItem();
 
         TransactionType typeFilter = TransactionType.NONE.equals(selectedType) ? null : selectedType;
 
-        List<Transaction> transactions = transactionService.findTransactionByClientIdAndDateAndType(selectedClient.getId(), from, to, typeFilter);
+        List<Transaction> transactions = transactionService.findTransactionByClientIdAndDateAndType(
+                selectedClient.getId(), from.atStartOfDay(), to.atTime(LocalTime.MAX), typeFilter);
 
         transactionTable.reAppend(transactions);
     }

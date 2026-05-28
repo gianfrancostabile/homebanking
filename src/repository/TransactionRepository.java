@@ -8,12 +8,9 @@ import exception.JDBCException;
 import exception.NotFoundJDBCException;
 import model.Transaction;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +44,6 @@ public class TransactionRepository extends JDBCRepository<Transaction, String> {
                 AND (? IS NULL OR t.type = ?)
             ORDER BY t.id DESC;
             """;
-    private static final DateFormat CREATION_DATE_FORMAT = new SimpleDateFormat(CommonConstant.TRANSACTION_DATE_FORMAT);
 
     private static TransactionRepository INSTANCE;
 
@@ -72,7 +68,7 @@ public class TransactionRepository extends JDBCRepository<Transaction, String> {
         statement.setString(5, data.getPaymentMethod().name());
         statement.setString(6, data.getCurrency().name());
         statement.setDouble(7, data.getAmount());
-        statement.setString(8, CREATION_DATE_FORMAT.format(data.getCreationDate()));
+        statement.setObject(8, data.getCreationDate());
         statement.executeUpdate();
         ResultSet resultSet = statement.getGeneratedKeys();
         if (resultSet.next()) {
@@ -91,7 +87,7 @@ public class TransactionRepository extends JDBCRepository<Transaction, String> {
         statement.setString(5, data.getPaymentMethod().name());
         statement.setString(6, data.getCurrency().name());
         statement.setDouble(7, data.getAmount());
-        statement.setString(8, CREATION_DATE_FORMAT.format(data.getCreationDate()));
+        statement.setObject(8, data.getCreationDate());
         statement.setString(9, id);
         statement.execute();
     }
@@ -131,15 +127,15 @@ public class TransactionRepository extends JDBCRepository<Transaction, String> {
         throw new NotFoundJDBCException();
     }
 
-    public List<Transaction> findTransactionByClientIdAndDateAndType(String clientId, String from, String to, TransactionType type) throws JDBCException {
+    public List<Transaction> findTransactionByClientIdAndDateAndType(String clientId, LocalDateTime from, LocalDateTime to, TransactionType type) throws JDBCException {
         Connection connection = this.connect();
         ArrayList<Transaction> result = new ArrayList<>();
         try {
             PreparedStatement statement = connection.prepareStatement(FIND_BY_CLIENT_ID_QUERY);
             statement.setString(1, clientId);
             statement.setString(2, clientId);
-            statement.setString(3, "00:00:00 " + from);
-            statement.setString(4, "23:59:59 " + to);
+            statement.setObject(3, from);
+            statement.setObject(4, to);
             if (type == null || TransactionType.NONE.equals(type)) {
                 statement.setNull(5, java.sql.Types.VARCHAR);
                 statement.setNull(6, java.sql.Types.VARCHAR);
@@ -161,7 +157,7 @@ public class TransactionRepository extends JDBCRepository<Transaction, String> {
     private Transaction mapTransaction(ResultSet resultSet) throws Exception {
         return new Transaction(
                 resultSet.getString(1),
-                CREATION_DATE_FORMAT.parse(resultSet.getString(2)),
+                resultSet.getObject(2, LocalDateTime.class),
                 TransactionType.valueOf(resultSet.getString(3)),
                 PaymentMethod.valueOf(resultSet.getString(4)),
                 Currency.valueOf(resultSet.getString(5)),

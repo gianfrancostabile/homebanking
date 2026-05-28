@@ -1,10 +1,16 @@
 package view.custom;
 
+import constant.CommonConstant;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -92,5 +98,27 @@ public class CustomTextField extends JTextField {
         g2.drawRoundRect(0, 0, this.getWidth() - 1, this.getHeight() - 1, 8, 8);
 
         g2.dispose();
+    }
+
+    public void actionAfterInactiveTimer(int delay, Runnable action) {
+        Timer timer = new Timer(delay, (_) -> action.run());
+        timer.setRepeats(false);
+        this.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) {
+                resetTimer();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                resetTimer();
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                resetTimer();
+            }
+
+            private void resetTimer() {
+                timer.restart();
+            }
+        });
     }
 }

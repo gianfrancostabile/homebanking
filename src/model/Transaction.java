@@ -4,11 +4,12 @@ import enums.Currency;
 import enums.PaymentMethod;
 import enums.TransactionType;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Transaction {
     private String id;
-    private Date creationDate;
+    private LocalDateTime creationDate;
     private TransactionType type;
     private PaymentMethod paymentMethod;
     private Currency currency;
@@ -17,7 +18,7 @@ public class Transaction {
     private String destinationProductId;
     private String cardId;
 
-    public Transaction(Date creationDate, TransactionType type, PaymentMethod paymentMethod, Currency currency, Double amount, String sourceProductId, String destinationProductId, String cardId) {
+    public Transaction(LocalDateTime creationDate, TransactionType type, PaymentMethod paymentMethod, Currency currency, Double amount, String sourceProductId, String destinationProductId, String cardId) {
         this.creationDate = creationDate;
         this.type = type;
         this.paymentMethod = paymentMethod;
@@ -28,16 +29,16 @@ public class Transaction {
         this.cardId = cardId;
     }
 
-    public Transaction(String id, Date creationDate, TransactionType type, PaymentMethod paymentMethod, Currency currency, Double amount, String sourceProductId, String destinationProductId, String cardId) {
+    public Transaction(String id, LocalDateTime creationDate, TransactionType type, PaymentMethod paymentMethod, Currency currency, Double amount, String sourceProductId, String destinationProductId, String cardId) {
         this(creationDate, type, paymentMethod, currency, amount, sourceProductId, destinationProductId, cardId);
         this.id = id;
     }
 
-    public Date getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 

@@ -9,6 +9,8 @@ import view.submenu.TransactionTypeRenderer;
 import javax.swing.table.TableColumn;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class TransactionTable extends CustomTable<Transaction> {
@@ -23,7 +25,7 @@ public class TransactionTable extends CustomTable<Transaction> {
             TableHeaderConstant.DESTINATION
     };
     private static final int TYPE_COLUMN_INDEX = 2;
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat(CommonConstant.TRANSACTION_DATE_FORMAT);
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern(CommonConstant.TRANSACTION_DATE_FORMAT);
 
     public TransactionTable() {
         super(COLUMNS);
