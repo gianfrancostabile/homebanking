@@ -1,6 +1,6 @@
 package service;
 
-import constant.CardType;
+import enums.CardType;
 import exception.JDBCException;
 import model.Card;
 import model.Product;

@@ -1,4 +1,4 @@
-package constant;
+package enums;
 
 public enum CardType {
     DEBIT("Tarjeta de Debito"),

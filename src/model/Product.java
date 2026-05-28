@@ -1,6 +1,6 @@
 package model;
 
-import constant.ProductType;
+import enums.ProductType;
 
 import java.util.ArrayList;
 import java.util.Date;

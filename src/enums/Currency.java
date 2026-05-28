@@ -1,4 +1,4 @@
-package constant;
+package enums;
 
 public enum Currency {
     PESOS("$"),

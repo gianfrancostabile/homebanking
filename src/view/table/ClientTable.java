@@ -1,6 +1,7 @@
 package view.table;
 
 import constant.CommonConstant;
+import constant.TableHeaderConstant;
 import model.Client;
 import view.submenu.SubMenuClientEditor;
 import view.submenu.SubMenuClientRenderer;
@@ -14,10 +15,10 @@ import java.util.List;
 public class ClientTable extends JPanel {
 
     private static final String[] COLUMNS = {
-            CommonConstant.ID_TABLE_HEADER,
-            CommonConstant.NAME_TABLE_HEADER,
-            CommonConstant.LASTNAME_TABLE_HEADER,
-            CommonConstant.ACTIONS_TABLE_HEADER
+            TableHeaderConstant.ID,
+            TableHeaderConstant.NAME,
+            TableHeaderConstant.LASTNAME,
+            TableHeaderConstant.ACTIONS
     };
 
     private static final int ID_COLUMN_INDEX = 0;

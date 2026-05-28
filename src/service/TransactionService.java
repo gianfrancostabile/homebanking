@@ -1,8 +1,8 @@
 package service;
 
-import constant.Currency;
-import constant.PaymentMethod;
-import constant.TransactionType;
+import enums.Currency;
+import enums.PaymentMethod;
+import enums.TransactionType;
 import exception.JDBCException;
 import model.Transaction;
 import repository.TransactionRepository;

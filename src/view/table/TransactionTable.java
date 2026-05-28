@@ -1,6 +1,7 @@
 package view.table;
 
 import constant.CommonConstant;
+import constant.TableHeaderConstant;
 import model.Transaction;
 import view.submenu.TransactionTypeRenderer;
 
@@ -15,13 +16,13 @@ import java.util.List;
 public class TransactionTable extends JPanel {
 
     private static final String[] COLUMNS = {
-            CommonConstant.ID_TABLE_HEADER,
-            CommonConstant.DATE_HEADER,
-            CommonConstant.TRANSACTION_TYPE_HEADER,
-            CommonConstant.PAYMENT_METHOD_HEADER,
-            CommonConstant.TRANSACTION_AMOUNT_HEADER,
-            CommonConstant.TRANSACTION_ORIGIN_HEADER,
-            CommonConstant.TRANSACTION_DESTINATION_HEADER
+            TableHeaderConstant.ID,
+            TableHeaderConstant.DATE,
+            TableHeaderConstant.TYPE,
+            TableHeaderConstant.PAYMENT_METHOD,
+            TableHeaderConstant.AMOUNT,
+            TableHeaderConstant.ORIGIN,
+            TableHeaderConstant.DESTINATION
     };
     private static final int TYPE_COLUMN_INDEX = 2;
 

@@ -1,6 +1,7 @@
 package view.form;
 
 import constant.*;
+import enums.ButtonVariant;
 import exception.JDBCException;
 import model.Client;
 import model.Product;
@@ -74,26 +75,26 @@ public class TransferForm extends JFrame {
     private JPanel buildForm() {
         JPanel form = new JPanel(new GridLayout(6, 2, 5, 10));
 
-        form.add(new JLabel(CommonConstant.CLIENT_FIELD));
+        form.add(new JLabel(FormFieldConstant.CLIENT));
         form.add(this.clientJComboBox);
 
-        form.add(new JLabel(CommonConstant.PRODUCT_FORM_FIELD));
+        form.add(new JLabel(FormFieldConstant.PRODUCT));
         form.add(this.productJComboBox);
 
-        form.add(new JLabel(CommonConstant.DESTINATION_ACCOUNT_FORM_FIELD));
+        form.add(new JLabel(FormFieldConstant.DESTINATION_ACCOUNT_ID));
         JPanel destinationAccountPanel = new JPanel(new BorderLayout(5, 0));
         this.destinationAccountField.setEnabled(false);
         destinationAccountPanel.add(this.destinationAccountField, BorderLayout.CENTER);
         destinationAccountPanel.add(this.searchButton, BorderLayout.EAST);
         form.add(destinationAccountPanel);
 
-        form.add(new JLabel(CommonConstant.DESTINATION_ACCOUNT_FORM_LABEL));
+        form.add(new JLabel(FormFieldConstant.DESTINATION_ACCOUNT));
         form.add(this.destinationNameLabel);
 
-        form.add(new JLabel(CommonConstant.CURRENT_BALANCE_FORM_FIELD));
+        form.add(new JLabel(FormFieldConstant.CURRENT_BALANCE));
         form.add(this.currentBalanceLabel);
 
-        form.add(new JLabel(CommonConstant.TRANSFER_BALANCE_FORM_FIELD));
+        form.add(new JLabel(FormFieldConstant.TRANSFER_BALANCE));
         JPanel transferAmountPanel = new JPanel(new BorderLayout(5, 0));
         transferAmountPanel.add(this.transferCurrencyLabel, BorderLayout.WEST);
         transferAmountPanel.add(this.transferAmountField, BorderLayout.CENTER);

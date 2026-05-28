@@ -1,6 +1,6 @@
 package view.submenu;
 
-import constant.ButtonVariant;
+import enums.ButtonVariant;
 import constant.FeedbackConstant;
 import model.Card;
 import model.Client;

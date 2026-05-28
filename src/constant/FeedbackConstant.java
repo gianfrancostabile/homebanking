@@ -20,6 +20,7 @@ public class FeedbackConstant {
     public static final String MAX_BALANCE_TO_TRANSFER_FIELD = "El monto a operar no puede ser superior a " + CommonConstant.MAX_BALANCE_TO_ADD;
     public static final String INVALID_DATE_FORMAT = "Ingresa un formato de fecha válido (" + CommonConstant.DAY_FORMAT + ").";
     public static final String TO_GREATER_THAN_FROM_DATE = "La fecha 'Desde' no puede ser posterior a la fecha 'Hasta'.";
+
     public static final String ERROR_TITLE = "Ups, Hubo un error!";
     public static final String ERROR_ADDING_CLIENT_MESSAGE = "Hubo un error al agregar al cliente a la base";
     public static final String ERROR_UPDATING_CLIENT_MESSAGE = "Hubo un error al actualizar al cliente a la base";
@@ -30,7 +31,6 @@ public class FeedbackConstant {
     public static final String ERROR_PAYING_MESSAGE = "Hubo un error al realizar el pago";
 
     public static final String INFO_DELETE_CLIENT = "Desea eliminar este cliente?";
-
 
     public static final String SUCCESS_TITLE = "Exito";
     public static final String TRANSFER_DONE = "Transferencia realizada";

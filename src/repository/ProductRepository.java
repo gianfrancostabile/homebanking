@@ -1,6 +1,6 @@
 package repository;
 
-import constant.ProductType;
+import enums.ProductType;
 import exception.DeleteJDBCException;
 import exception.JDBCException;
 import exception.NotFoundJDBCException;

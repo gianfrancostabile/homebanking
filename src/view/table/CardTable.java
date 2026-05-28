@@ -1,6 +1,7 @@
 package view.table;
 
 import constant.CommonConstant;
+import constant.TableHeaderConstant;
 import model.Card;
 
 import javax.swing.*;
@@ -14,15 +15,15 @@ import java.util.List;
 public class CardTable extends JPanel {
 
     private static final String[] COLUMNS = {
-            CommonConstant.CARD_BRAND_HEADER,
-            CommonConstant.CARD_TYPE_HEADER,
-            CommonConstant.CARD_NUMBER_HEADER,
-            CommonConstant.CARD_SECURITY_CODE_HEADER,
-            CommonConstant.CARD_EXPIRATION_DATE_HEADER,
-            CommonConstant.CARD_OWNER_NAME_HEADER
+            TableHeaderConstant.BRAND,
+            TableHeaderConstant.TYPE,
+            TableHeaderConstant.NUMBER,
+            TableHeaderConstant.SECURITY_CODE,
+            TableHeaderConstant.EXPIRATION_DATE,
+            TableHeaderConstant.OWNER_NAME
     };
 
-    private static final DateFormat EXPIRATION_DATE_FORMAT = new SimpleDateFormat("MM/yy");
+    private static final DateFormat EXPIRATION_DATE_FORMAT = new SimpleDateFormat(CommonConstant.CARD_EXPIRATION_DATE_FORMAT);
     private static final int SECURITY_CODE_COLUMN_INDEX = 3;
     private static final int PREFERRED_SECURITY_COLUMN_WIDTH = 125;
 

@@ -1,7 +1,8 @@
 package view.table;
 
 import constant.CommonConstant;
-import constant.ProductType;
+import constant.TableHeaderConstant;
+import enums.ProductType;
 import model.Product;
 import view.submenu.SubMenuProductEditor;
 import view.submenu.SubMenuProductRenderer;
@@ -15,11 +16,11 @@ import java.util.List;
 public class ProductTable extends JPanel {
 
     private static final String[] COLUMNS = {
-            CommonConstant.PRODUCT_TYPE_HEADER,
-            CommonConstant.ALIAS_HEADER,
-            CommonConstant.CBU_HEADER,
-            CommonConstant.BALANCE_HEADER,
-            CommonConstant.ACTIONS_TABLE_HEADER
+            TableHeaderConstant.TYPE,
+            TableHeaderConstant.ALIAS,
+            TableHeaderConstant.CBU,
+            TableHeaderConstant.BALANCE,
+            TableHeaderConstant.ACTIONS
     };
 
     private static final int ALIAS_COLUMN_INDEX = 1;

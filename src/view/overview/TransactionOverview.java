@@ -1,6 +1,8 @@
 package view.overview;
 
 import constant.*;
+import enums.ButtonVariant;
+import enums.TransactionType;
 import model.Client;
 import model.Transaction;
 import service.ClientService;
@@ -99,7 +101,7 @@ public class TransactionOverview extends JFrame {
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        form.add(new JLabel(CommonConstant.CLIENT_FIELD), gbc);
+        form.add(new JLabel(FormFieldConstant.CLIENT), gbc);
 
         gbc.gridx = 1;
         gbc.insets = new Insets(0, 0, 0, 20);
@@ -107,7 +109,7 @@ public class TransactionOverview extends JFrame {
 
         gbc.gridx = 2;
         gbc.insets = new Insets(0, 0, 0, 5);
-        form.add(new JLabel(CommonConstant.FROM_LABEL), gbc);
+        form.add(new JLabel(FormFieldConstant.FROM), gbc);
 
         gbc.gridx = 3;
         gbc.insets = new Insets(0, 0, 0, 20);
@@ -115,7 +117,7 @@ public class TransactionOverview extends JFrame {
 
         gbc.gridx = 4;
         gbc.insets = new Insets(0, 0, 0, 5);
-        form.add(new JLabel(CommonConstant.TO_LABEL), gbc);
+        form.add(new JLabel(FormFieldConstant.TO), gbc);
 
         gbc.gridx = 5;
         gbc.insets = new Insets(0, 0, 0, 20);
@@ -123,7 +125,7 @@ public class TransactionOverview extends JFrame {
 
         gbc.gridx = 6;
         gbc.insets = new Insets(0, 0, 0, 5);
-        form.add(new JLabel(CommonConstant.TYPE_LABEL), gbc);
+        form.add(new JLabel(FormFieldConstant.TYPE), gbc);
 
         gbc.gridx = 7;
         gbc.insets = new Insets(0, 0, 0, 25);

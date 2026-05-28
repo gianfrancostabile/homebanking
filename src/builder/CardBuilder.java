@@ -1,7 +1,7 @@
 package builder;
 
-import constant.CardBrand;
-import constant.CardType;
+import enums.CardBrand;
+import enums.CardType;
 import model.Card;
 import model.Client;
 

@@ -1,4 +1,4 @@
-package constant;
+package enums;
 
 public enum CardBrand {
     VISA("45935400"),

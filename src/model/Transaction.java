@@ -1,8 +1,8 @@
 package model;
 
-import constant.Currency;
-import constant.PaymentMethod;
-import constant.TransactionType;
+import enums.Currency;
+import enums.PaymentMethod;
+import enums.TransactionType;
 
 import java.util.Date;
 

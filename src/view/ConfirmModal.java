@@ -1,7 +1,7 @@
 package view;
 
 import constant.ButtonConstant;
-import constant.ButtonVariant;
+import enums.ButtonVariant;
 import view.custom.CustomButton;
 
 import javax.swing.*;

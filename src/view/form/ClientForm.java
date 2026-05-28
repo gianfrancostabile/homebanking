@@ -1,6 +1,7 @@
 package view.form;
 
 import constant.*;
+import enums.ButtonVariant;
 import model.Client;
 import util.Dialog;
 import view.custom.CustomButton;
@@ -67,10 +68,10 @@ public class ClientForm extends JFrame {
     private JPanel buildForm() {
         JPanel form = new JPanel(new GridLayout(2, 2, 5, 10));
 
-        form.add(new JLabel(CommonConstant.NAME_FORM_FIELD));
+        form.add(new JLabel(FormFieldConstant.NAME));
         form.add(this.nameField);
 
-        form.add(new JLabel(CommonConstant.LASTNAME_FORM_FIELD));
+        form.add(new JLabel(FormFieldConstant.LASTNAME));
         form.add(this.lastnameField);
 
         return form;

@@ -1,6 +1,7 @@
 package view.form;
 
 import constant.*;
+import enums.ButtonVariant;
 import model.Product;
 import service.ProductService;
 import util.Dialog;
@@ -53,7 +54,7 @@ public class AddBalanceForm extends JFrame {
     private JPanel buildForm() {
         JPanel form = new JPanel(new GridLayout(1, 2, 5, 0));
 
-        form.add(new JLabel(CommonConstant.AMOUNT_FIELD));
+        form.add(new JLabel(FormFieldConstant.AMOUNT));
         form.add(this.balanceField);
 
         return form;

@@ -1,7 +1,7 @@
 package repository;
 
-import constant.CardBrand;
-import constant.CardType;
+import enums.CardBrand;
+import enums.CardType;
 import exception.DeleteJDBCException;
 import exception.JDBCException;
 import exception.NotFoundJDBCException;

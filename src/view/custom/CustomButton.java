@@ -1,6 +1,6 @@
 package view.custom;
 
-import constant.ButtonVariant;
+import enums.ButtonVariant;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

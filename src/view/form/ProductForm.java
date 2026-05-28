@@ -2,6 +2,8 @@ package view.form;
 
 import builder.ProductBuilder;
 import constant.*;
+import enums.ButtonVariant;
+import enums.ProductType;
 import model.Client;
 import model.Product;
 import service.ProductService;
@@ -74,7 +76,7 @@ public class ProductForm extends JFrame {
         CustomButton addProductButton = new CustomButton(ButtonVariant.CREATE);
         addProductButton.addActionListener(_ -> this.onAddProductClick());
 
-        form.add(new JLabel(CommonConstant.PRODUCT_FORM_FIELD));
+        form.add(new JLabel(FormFieldConstant.PRODUCT));
         form.add(this.productTypeField);
         form.add(addProductButton);
 

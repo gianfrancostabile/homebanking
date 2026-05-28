@@ -1,6 +1,6 @@
 package view.submenu;
 
-import constant.TransactionType;
+import enums.TransactionType;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

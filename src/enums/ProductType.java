@@ -1,4 +1,4 @@
-package constant;
+package enums;
 
 public enum ProductType {
     CUENTA_CORRIENTE("Cuenta Corriente", Currency.PESOS, 1d),

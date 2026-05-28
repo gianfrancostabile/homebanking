@@ -1,6 +1,6 @@
 package view.submenu;
 
-import constant.ButtonVariant;
+import enums.ButtonVariant;
 import model.Product;
 import view.custom.CustomButton;
 import view.form.AddBalanceForm;

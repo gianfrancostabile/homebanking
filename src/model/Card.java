@@ -1,7 +1,7 @@
 package model;
 
-import constant.CardBrand;
-import constant.CardType;
+import enums.CardBrand;
+import enums.CardType;
 import constant.CommonConstant;
 
 import java.util.Date;

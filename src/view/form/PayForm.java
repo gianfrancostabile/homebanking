@@ -1,6 +1,8 @@
 package view.form;
 
 import constant.*;
+import enums.ButtonVariant;
+import enums.CardType;
 import exception.JDBCException;
 import model.Card;
 import model.Client;
@@ -29,7 +31,7 @@ public class PayForm extends JFrame {
     private final CardService cardService = CardService.getInstance();
 
     // UI Components
-    private final JLabel currentBalanceLabel = new JLabel(CommonConstant.CURRENT_BALANCE_FORM_FIELD);
+    private final JLabel currentBalanceLabel = new JLabel(FormFieldConstant.CURRENT_BALANCE);
     private final JLabel currentBalanceValueLabel = new JLabel();
     private final JLabel payCurrencyLabel = new JLabel();
     private CustomComboBox<Client> clientJComboBox;
@@ -76,16 +78,16 @@ public class PayForm extends JFrame {
 
         JPanel form = new JPanel(new GridLayout(4, 2, 5, 10)); // 4 filas, 2 columnas, con espacio entre celdas
 
-        form.add(new JLabel(CommonConstant.CLIENT_FIELD));
+        form.add(new JLabel(FormFieldConstant.CLIENT));
         form.add(this.clientJComboBox);
 
-        form.add(new JLabel(CommonConstant.CARD_FORM_FIELD));
+        form.add(new JLabel(FormFieldConstant.CARD));
         form.add(this.cardJComboBox);
 
         form.add(this.currentBalanceLabel);
         form.add(this.currentBalanceValueLabel);
 
-        form.add(new JLabel(CommonConstant.TRANSFER_BALANCE_FORM_FIELD));
+        form.add(new JLabel(FormFieldConstant.TRANSFER_BALANCE));
 
         JPanel transferAmountPanel = new JPanel(new BorderLayout(5, 0));
         transferAmountPanel.add(this.payCurrencyLabel, BorderLayout.WEST);
@@ -198,8 +200,8 @@ public class PayForm extends JFrame {
         double balance = getAvailableBalance();
 
         this.currentBalanceLabel.setText(CardType.CREDIT.equals(card.getType())
-                ? CommonConstant.CREDIT_LIMIT_FORM_FIELD
-                : CommonConstant.CURRENT_BALANCE_FORM_FIELD);
+                ? FormFieldConstant.CREDIT_LIMIT
+                : FormFieldConstant.CURRENT_BALANCE);
 
         this.currentBalanceValueLabel.setText(currency + balance);
         this.payCurrencyLabel.setText(currency);

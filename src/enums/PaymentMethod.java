@@ -1,4 +1,4 @@
-package constant;
+package enums;
 
 public enum PaymentMethod {
     TRANSFER("Transferencia"),
