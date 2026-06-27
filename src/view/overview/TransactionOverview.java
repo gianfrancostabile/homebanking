@@ -1,15 +1,12 @@
 package view.overview;
 
-import constant.CommonConstant;
-import constant.FeedbackConstant;
-import constant.FormFieldConstant;
-import constant.TitleConstant;
-import enums.ButtonVariant;
+import constant.*;
 import enums.TransactionType;
 import model.Client;
 import model.Transaction;
 import service.ClientService;
 import service.TransactionService;
+import service.impl.ReportTransactionService;
 import util.Dialog;
 import view.custom.CustomButton;
 import view.custom.CustomComboBox;
@@ -18,10 +15,9 @@ import view.table.TransactionTable;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ItemEvent;
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -37,9 +33,11 @@ public class TransactionOverview extends JFrame {
     // Services
     private final ClientService clientService = ClientService.getInstance();
     private final TransactionService transactionService = TransactionService.getInstance();
+    private final ReportTransactionService reportTransactionService = ReportTransactionService.getInstance();
 
     // State
     private final Client client;
+    private List<Transaction> transactions;
 
     // Components UI
     private CustomComboBox<Client> clientField;
@@ -102,11 +100,11 @@ public class TransactionOverview extends JFrame {
 
         fromDateField = new CustomTextField(firstDayOfMonth.format(DATE_FORMATTER));
         fromDateField.setPreferredSize(new Dimension(110, 35));
-        fromDateField.actionAfterInactiveTimer(3000, this::onSearch);
+        fromDateField.actionAfterInactiveTimer(1500, this::onSearch);
 
         toDateField = new CustomTextField(today.format(DATE_FORMATTER));
         toDateField.setPreferredSize(new Dimension(110, 35));
-        toDateField.actionAfterInactiveTimer(3000, this::onSearch);
+        toDateField.actionAfterInactiveTimer(1500, this::onSearch);
 
         typeField = new CustomComboBox<>(TransactionType.values());
         typeField.setPreferredSize(new Dimension(140, 35));
@@ -115,6 +113,9 @@ public class TransactionOverview extends JFrame {
                 onSearch();
             }
         });
+
+        CustomButton printButton = new CustomButton(ButtonConstant.PRINT_BUTTON);
+        printButton.addActionListener((_) -> this.onPrint());
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -148,6 +149,10 @@ public class TransactionOverview extends JFrame {
         gbc.insets = new Insets(0, 0, 0, 25);
         form.add(typeField, gbc);
 
+        gbc.gridx = 8;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        form.add(printButton, gbc);
+
         return form;
     }
 
@@ -173,6 +178,16 @@ public class TransactionOverview extends JFrame {
         loadAndPopulateTransactions();
     }
 
+    private void onPrint() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle(TitleConstant.SELECT_DESTINATION_FOLDER);
+        chooser.setSelectedFile(new File(CommonConstant.REPORT_FILE_NAME));
+
+        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            reportTransactionService.print(this.transactions, chooser.getSelectedFile().getAbsolutePath());
+        }
+    }
+
     private void loadAndPopulateTransactions() {
         Client selectedClient = (Client) clientField.getSelectedItem();
         LocalDate from = LocalDate.parse(fromDateField.getText().trim(), DATE_FORMATTER);
@@ -181,9 +196,9 @@ public class TransactionOverview extends JFrame {
 
         TransactionType typeFilter = TransactionType.NONE.equals(selectedType) ? null : selectedType;
 
-        List<Transaction> transactions = transactionService.findTransactionByClientIdAndDateAndType(
+        this.transactions = transactionService.findTransactionByClientIdAndDateAndType(
                 selectedClient.getId(), from.atStartOfDay(), to.atTime(LocalTime.MAX), typeFilter);
 
-        transactionTable.reAppend(transactions);
+        transactionTable.reAppend(this.transactions);
     }
 }

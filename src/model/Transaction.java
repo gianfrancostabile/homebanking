@@ -1,11 +1,11 @@
 package model;
 
+import constant.CommonConstant;
 import enums.Currency;
 import enums.PaymentMethod;
 import enums.TransactionType;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class Transaction {
     private String id;
@@ -104,5 +104,17 @@ public class Transaction {
 
     public void setCardId(String cardId) {
         this.cardId = cardId;
+    }
+
+    @Override
+    public String toString() {
+        return id + CommonConstant.REPORT_DELIMITER +
+                creationDate.toString() + CommonConstant.REPORT_DELIMITER +
+                type.getPrettyName() + CommonConstant.REPORT_DELIMITER +
+                paymentMethod.getPrettyName() + CommonConstant.REPORT_DELIMITER +
+                currency.getSign() + amount + CommonConstant.REPORT_DELIMITER +
+                sourceProductId + CommonConstant.REPORT_DELIMITER +
+                destinationProductId + CommonConstant.REPORT_DELIMITER +
+                cardId;
     }
 }

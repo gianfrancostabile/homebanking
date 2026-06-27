@@ -1,0 +1,10 @@
+#,Fecha,Tipo,Medio de pago,Monto,Origen,Destino,Tarjeta utilizada
+25,2026-05-28T19:14:37,Recibido,Interes,$168700.84971143352,null,3,null
+24,2026-05-28T19:14:34,Recibido,Interes,U$D0.22784230823700113,null,2,null
+23,2026-05-28T18:53:20,Recibido,Transferencia,$100000.0,6,3,null
+20,2026-05-28T18:52:49,Recibido,Interes,$144273.49973766692,null,3,null
+19,2026-05-28T18:52:47,Recibido,Interes,U$D0.22558644379901338,null,2,null
+15,2026-05-28T18:44:59,Recibido,Interes,$131157.7270342426,null,3,null
+14,2026-05-28T18:44:59,Recibido,Interes,U$D0.2233529146524873,null,2,null
+12,2026-05-28T18:43:19,Recibido,Interes,$119234.29730385682,null,3,null
+11,2026-05-28T18:43:16,Recibido,Interes,U$D0.22114149965592844,null,2,null

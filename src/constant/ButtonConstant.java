@@ -12,4 +12,5 @@ public class ButtonConstant {
     public static final String PAY_SUBMIT_BUTTON = "Pagar";
     public static final String YES_BUTTON = "Si";
     public static final String NO_BUTTON = "No";
+    public static final String PRINT_BUTTON = "Imprimir";
 }

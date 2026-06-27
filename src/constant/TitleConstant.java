@@ -11,5 +11,6 @@ public class TitleConstant {
     public static final String TRANSFER_FORM = "Transferir dinero entre cuentas";
     public static final String PAY_FORM = "Pagar con tarjetas";
     public static final String TRANSACTION_OVERVIEW = "Historial de Transacciones";
+    public static final String SELECT_DESTINATION_FOLDER = "Selecciona la carpeta destino";
 
 }

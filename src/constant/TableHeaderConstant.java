@@ -22,4 +22,5 @@ public class TableHeaderConstant {
     public static final String AMOUNT = "Monto";
     public static final String ORIGIN = "Origen";
     public static final String DESTINATION = "Destino";
+    public static final String USED_CARD = "Tarjeta utilizada";
 }

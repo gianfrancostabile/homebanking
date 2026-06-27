@@ -12,4 +12,7 @@ public class CommonConstant {
     public static final String DAY_FORMAT = "dd/MM/yyyy";
     public static final int ROW_HEIGHT = 36;
     public static final String FONT_FAMILY = "Segoe UI";
+    public static final String REPORT_DELIMITER = ",";
+    public static final String REPORT_FILE_NAME = "reporte.txt";
+    public static final String NUMBER_FORMAT = "#,##0.00";
 }
