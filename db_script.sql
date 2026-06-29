@@ -64,7 +64,6 @@ BEGIN
         WHEN 'CUENTA_CORRIENTE' THEN 'cc'
         WHEN 'CAJA_DE_AHORRO' THEN 'ca'
         WHEN 'CAJA_DE_AHORRO_DOLARES' THEN 'cad'
-        ELSE 'prod'
     END;
 
     SET base_alias = CONCAT(client_name, '.', type_suffix);

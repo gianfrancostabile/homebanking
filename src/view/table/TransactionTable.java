@@ -23,6 +23,7 @@ public class TransactionTable extends CustomTable<Transaction> {
     };
     private static final int DATE_INDEX = 1;
     private static final int TYPE_COLUMN_INDEX = 2;
+    private static final int PAYMENT_METHOD_INDEX = 3;
     private static final int AMOUNT_INDEX = 4;
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern(CommonConstant.TRANSACTION_DATE_FORMAT);
 
@@ -33,12 +34,8 @@ public class TransactionTable extends CustomTable<Transaction> {
     @Override
     protected void initComponents() {
         super.initComponents();
-        TableColumn dateColumn = this.getTable().getColumnModel().getColumn(DATE_INDEX);
-        dateColumn.setPreferredWidth(120);
-        TableColumn typeColumn = this.getTable().getColumnModel().getColumn(TYPE_COLUMN_INDEX);
-        typeColumn.setCellRenderer(new TransactionTypeRenderer());
-        TableColumn amountColumn = this.getTable().getColumnModel().getColumn(AMOUNT_INDEX);
-        amountColumn.setCellRenderer(new TransactionAmountRenderer());
+        this.adjustCellSize();
+        this.adjustCellType();
     }
 
     @Override
@@ -52,5 +49,19 @@ public class TransactionTable extends CustomTable<Transaction> {
                 data.getSourceProductId(),
                 data.getDestinationProductId()
         };
+    }
+
+    private void adjustCellSize() {
+        TableColumn dateColumn = this.getTable().getColumnModel().getColumn(DATE_INDEX);
+        dateColumn.setPreferredWidth(120);
+        TableColumn paymentMethodColumn = this.getTable().getColumnModel().getColumn(PAYMENT_METHOD_INDEX);
+        paymentMethodColumn.setPreferredWidth(120);
+    }
+
+    private void adjustCellType() {
+        TableColumn typeColumn = this.getTable().getColumnModel().getColumn(TYPE_COLUMN_INDEX);
+        typeColumn.setCellRenderer(new TransactionTypeRenderer());
+        TableColumn amountColumn = this.getTable().getColumnModel().getColumn(AMOUNT_INDEX);
+        amountColumn.setCellRenderer(new TransactionAmountRenderer());
     }
 }
