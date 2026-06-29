@@ -28,6 +28,7 @@ public class CardRepository extends JDBCRepository<Card, String> {
     private static final String FIND_BY_PRODUCT_ID_QUERY = "SELECT id, product_id, brand, type, card_number, security_code, expiration_date, owner_name, available_debt_balance, debt_balance FROM Cards WHERE product_id = ?";
     private static final String FIND_BY_PRODUCT_IDS_QUERY = "SELECT id, product_id, brand, type, card_number, security_code, expiration_date, owner_name, available_debt_balance, debt_balance FROM Cards WHERE product_id IN (";
     private static final String DELETE_BY_PRODUCT_ID_QUERY = "DELETE FROM Cards WHERE product_id = ?";
+    private static final String GET_NEXT_CARD_NUMBER = "SELECT IFNULL(MAX(CAST(SUBSTRING(card_number, 9, 8) AS UNSIGNED)), 0) + 1 FROM Cards WHERE card_number LIKE CONCAT(?, '%')";
     private static final DateFormat EXPIRATION_DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
     private static CardRepository INSTANCE;
@@ -165,6 +166,23 @@ public class CardRepository extends JDBCRepository<Card, String> {
             statement.execute();
         } catch (Exception exception) {
             throw new DeleteJDBCException(exception);
+        } finally {
+            this.disconnect(connection);
+        }
+    }
+
+    public Integer getNextCardNumber(String cardPrefix) throws JDBCException {
+        Connection connection = this.connect();
+        try {
+            PreparedStatement statement = connection.prepareStatement(GET_NEXT_CARD_NUMBER);
+            statement.setString(1, cardPrefix);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+            return 0;
+        } catch (Exception exception) {
+            throw new JDBCException("Error getting next card number", exception);
         } finally {
             this.disconnect(connection);
         }

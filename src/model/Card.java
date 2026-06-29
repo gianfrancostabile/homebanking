@@ -42,12 +42,8 @@ public class Card {
         this.productId = productId;
     }
 
-    public void setAvailableDebtBalance(Double availableDebtBalance) {
-        this.availableDebtBalance = availableDebtBalance;
-    }
-
-    public void setDebtBalance(Double debtBalance) {
-        this.debtBalance = debtBalance;
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
     }
 
     public String getId() {

@@ -1,5 +1,6 @@
 package service;
 
+import constant.CommonConstant;
 import exception.JDBCException;
 import model.Card;
 import model.Product;
@@ -26,20 +27,16 @@ public class CardService {
     }
 
     public void insert(Card model) throws JDBCException {
+        Integer suffixCardNumber = repository.getNextCardNumber(model.getCardNumber());
+        String fullCardNumber = model.getCardNumber() + String.format(CommonConstant.CARD_PADDING_FORMAT, suffixCardNumber);
+        model.setCardNumber(fullCardNumber);
+
         String id = repository.insert(model);
         model.setId(id);
     }
 
     public void update(Card model) throws JDBCException {
         repository.update(model.getId(), model);
-    }
-
-    public List<Card> findByProductId(String productId) {
-        try {
-            return repository.findByProductId(productId);
-        } catch (Exception e) {
-            return new ArrayList<>();
-        }
     }
 
     public List<Card> findByProductIdList(List<String> productIds) {

@@ -15,4 +15,5 @@ public class CommonConstant {
     public static final String REPORT_DELIMITER = ",";
     public static final String REPORT_FILE_NAME = "reporte.txt";
     public static final String NUMBER_FORMAT = "#,##0.00";
+    public static final String CARD_PADDING_FORMAT = "%08d";
 }

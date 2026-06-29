@@ -84,22 +84,3 @@ BEGIN
     END IF;
 END//
 DELIMITER ;
-
-DELIMITER //
-CREATE TRIGGER before_insert_card
-BEFORE INSERT ON Cards
-FOR EACH ROW
-BEGIN
-    DECLARE card_prefix VARCHAR(8);
-    DECLARE next_sequence INT;
-
-    SET card_prefix = NEW.card_number;
-
-    SELECT IFNULL(MAX(CAST(SUBSTRING(card_number, 9, 8) AS UNSIGNED)), 0) + 1 
-    INTO next_sequence 
-    FROM Cards
-    WHERE card_number LIKE CONCAT(card_prefix, '%');
-
-    SET NEW.card_number = CONCAT(card_prefix, LPAD(next_sequence, 8, '0'));
-END//
-DELIMITER ;
