@@ -113,6 +113,10 @@ public abstract class CustomTable<T> extends JPanel {
     }
 
     public void clearTable() {
+        if (this.table.isEditing()) {
+            this.table.getCellEditor().cancelCellEditing();
+        }
+        this.table.clearSelection();
         this.tableModel.setRowCount(0);
     }
 

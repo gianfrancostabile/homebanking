@@ -19,10 +19,10 @@ private static void configureBackgroundTasks() {
             TimeUnit.MINUTES
     );
 
-    IO.println("[SYSTEM] Temporizador de intereses configurado 10 minutos. Dentro de 1 minuto se ejecutara el primero.");
+    System.out.println("[SYSTEM] Temporizador de intereses configurado 10 minutos. Dentro de 1 minuto se ejecutara el primero.");
 
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-        IO.println("[SYSTEM] Apagando el planificador de tareas...");
+        System.out.println("[SYSTEM] Apagando el planificador de tareas...");
         scheduler.shutdown();
     }));
 }
